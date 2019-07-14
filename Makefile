@@ -55,6 +55,9 @@ get_frame_seq: $(LIBOBJ)
 clean:
 	rm -f $(SRCDIR)/*.o get_frame_seq data/*
 
+clean_data:
+	rm -f data/*
+    
 # build.
 $(SRCDIR)/get_frame_seq.o: 
 	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/get_frame_seq.o $(SRCDIR)/get_frame_seq.cpp $(INCLUDES)

@@ -4,8 +4,43 @@
 #include <iostream>
 #include <fstream>
 #include <unistd.h>
-
+#include <yaml-cpp/yaml.h>
 #include <boost/lexical_cast.hpp>
+
+YAML::Node initConfigure() {
+	return YAML::LoadFile("conf/conf.yaml");
+}
+
+cv::Rect getSubFrameRect(YAML::Node &conf, cv::Mat &frame) {
+	cv::Rect rect(0, 0, 0, 0);
+
+	if (!conf["originalVideo"] || 
+		!conf["originalVideo"]["resolution"] ||
+		!conf["originalVideo"]["flagArea"]) {
+        return rect;
+    }
+
+	int oriWidth    = conf["originalVideo"]["resolution"]["width"].as<int>();
+	int oriHeight   = conf["originalVideo"]["resolution"]["height"].as<int>();
+
+	int oriFlagX    = conf["originalVideo"]["flagArea"]["x"].as<int>();
+	int oriFlagY    = conf["originalVideo"]["flagArea"]["y"].as<int>();
+	int oriFlagW    = conf["originalVideo"]["flagArea"]["width"].as<int>();
+	int oriFlagH    = conf["originalVideo"]["flagArea"]["height"].as<int>();
+
+	int frameWidth  = frame.cols;
+	int frameHeight = frame.rows;
+
+	int ratioX      = oriWidth  / frameWidth;
+	int ratioY      = oriHeight / frameHeight;
+
+	rect = cv::Rect(oriFlagX / ratioX, 
+		            oriFlagY / ratioY, 
+		            oriFlagW / ratioX,
+		            oriFlagH / ratioY);
+
+	return rect;
+}
 
 int main(int argc, char *argv[]) {
 	cv::VideoCapture cap;
@@ -20,9 +55,13 @@ int main(int argc, char *argv[]) {
 		cap.open(std::string(argv[1]));
 	}
 
+	YAML::Node conf = initConfigure();
+
     cv::Mat frame;
     cap >> frame;
     int i = 0;
+    cv::Rect subFrameRect = getSubFrameRect(conf, frame);
+
 	while(!frame.empty()) {
 		char c = (char)cv::waitKey(1);
     	if (c == 27) {
@@ -30,7 +69,6 @@ int main(int argc, char *argv[]) {
     	}
 
     	cv::Mat subFrame;
-		cv::Rect subFrameRect = cv::Rect(30, 80, 250, 130);
 		subFrame = frame(subFrameRect);
 
     	cv::Mat greyFrame;

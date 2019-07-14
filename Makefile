@@ -53,7 +53,7 @@ get_frame_seq: $(LIBOBJ)
 
 # clean
 clean:
-	rm -f $(SRCDIR)/*.o get_frame_seq
+	rm -f $(SRCDIR)/*.o get_frame_seq data/*
 
 # build.
 $(SRCDIR)/get_frame_seq.o: 

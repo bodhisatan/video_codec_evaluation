@@ -1,5 +1,6 @@
 # Prerequisites
 *.d
+.DS_Store
 
 # Compiled Object files
 *.slo
@@ -33,4 +34,3 @@
 get_frame_seq
 ocr.py
 data/*
-.DS_Store

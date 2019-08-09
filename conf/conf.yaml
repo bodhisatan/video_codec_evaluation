@@ -1,11 +1,11 @@
 originalVideo:
   resolution: 
-    width: 3840
-    height: 1504
+    width: 720
+    height: 1280
   flagArea:
-    x: 30
-    y: 80
-    width: 250
-    height: 130
-  frameCount: 144
+    x: 40
+    y: 150
+    width: 160
+    height: 60
+  frameCount: 631
   

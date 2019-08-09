@@ -34,6 +34,8 @@ cv::Rect getSubFrameRect(YAML::Node &conf, cv::Mat &frame) {
 	int ratioX      = oriWidth  / frameWidth;
 	int ratioY      = oriHeight / frameHeight;
 
+	std::cout << "ratioX: " << ratioX << ", ratioY:" << ratioY << std::endl;
+	
 	rect = cv::Rect(oriFlagX / ratioX, 
 		            oriFlagY / ratioY, 
 		            oriFlagW / ratioX,

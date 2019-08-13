@@ -45,7 +45,8 @@ ifndef SRCDIR
     SRCDIR=src
 endif
 
-LIBOBJ = $(SRCDIR)/get_frame_seq.o
+LIBOBJ = $(SRCDIR)/get_frame_seq.o \
+         $(SRCDIR)/cmdlineutils.o
 
 get_frame_seq: $(LIBOBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)

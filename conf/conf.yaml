@@ -1,11 +1,7 @@
 originalVideo:
-  resolution: 
-    width: 720
-    height: 1280
   flagArea:
     x: 40
     y: 150
     width: 160
     height: 60
-  frameCount: 631
   

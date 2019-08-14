@@ -35,15 +35,15 @@ cv::Rect getSubFrameRect(YAML::Node &conf, cv::Mat &frame, int oriWidth, int ori
 	int frameWidth  = frame.cols;
 	int frameHeight = frame.rows;
 
-	int ratioX      = oriWidth  / frameWidth;
-	int ratioY      = oriHeight / frameHeight;
+	float ratioX      = oriWidth * 1.0 / frameWidth;
+	float ratioY      = oriHeight * 1.0 / frameHeight;
 
 	std::cout << "ratioX: " << ratioX << ", ratioY:" << ratioY << std::endl;
 	
-	rect = cv::Rect(oriFlagX / ratioX, 
-		            oriFlagY / ratioY, 
-		            oriFlagW / ratioX,
-		            oriFlagH / ratioY);
+	rect = cv::Rect(int(oriFlagX / ratioX), 
+		            int(oriFlagY / ratioY), 
+		            int(oriFlagW / ratioX),
+		            int(oriFlagH / ratioY));
 
 	return rect;
 }

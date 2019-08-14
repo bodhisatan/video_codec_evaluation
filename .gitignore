@@ -34,3 +34,5 @@
 get_frame_seq
 ocr.py
 data/*
+videoDB/*
+videoAfter/*

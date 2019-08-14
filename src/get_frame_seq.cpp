@@ -1,10 +1,12 @@
-#include <opencv2/opencv.hpp>
-
 #include <string>
-#include <iostream>
 #include <fstream>
+#include <dirent.h>
+#include <iostream>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <yaml-cpp/yaml.h>
+#include <opencv2/opencv.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include "cmdline.h"
@@ -56,6 +58,13 @@ int main(int argc, char *argv[]) {
 	std::string file = cmdPara.get<std::string>("input");
 	int oriWidth     = cmdPara.get<int>("originWidth");
 	int oriHeight    = cmdPara.get<int>("originHeight");
+	std::string dir  = cmdPara.get<std::string>("dir");
+
+	std::cout << "dir: " << dir << std::endl;
+	
+	if (!isDirExist(dir)) {
+		mkdir(dir.c_str(), S_IRWXU);
+	}
 
 	wndTitle = file;
 	cap.open(file);
@@ -84,7 +93,7 @@ int main(int argc, char *argv[]) {
     		cv::cvtColor(subFrame, greyFrame, cv::COLOR_RGB2GRAY);
     	}
     
-		cv::imwrite("data/" + boost::lexical_cast<std::string>(i) + ".png", greyFrame);
+		cv::imwrite(dir + "/" + boost::lexical_cast<std::string>(i) + ".png", greyFrame);
 		//cv::imshow(wndTitle, subFrame);
 		++i;
 		cap >> frame;

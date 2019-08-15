@@ -36,3 +36,4 @@ ocr.py
 data/*
 videoDB/*
 videoAfter/*
+appInfo.sh

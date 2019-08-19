@@ -16,8 +16,8 @@ function drawFrameNumber() {
 		return 1
 	fi
 
-	local filename = $1
-	local output   = $2
+	local filename=$1
+	local output=$2
 	
 	$FFMPEG -i ${filename} -vf 'drawbox=40:150:160:60:Green:fill, drawtext=fontcolor=white:fontsize=50:fontfile=/Library/Fonts/Arial\ Bold.ttf:text=%{n}:x=50:y=160' -y ${output}
 

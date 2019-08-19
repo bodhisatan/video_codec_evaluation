@@ -50,6 +50,51 @@ function isDeviceConnection() {
 }
 
 ###
+###
+#@brief: 获取设备相关信息
+#
+#@echo string "设备信息"
+function getDeviceInfo() {
+	isDeviceConnection
+
+	if [ $? -ne 1 ]
+	then
+		echo ""
+		return 1
+	fi
+
+	local brand=$($ADB -d shell getprop ro.product.brand | tr -s ' ' '_')
+	local model=$($ADB -d shell getprop ro.product.model |  tr -s ' ' '_')
+	local androidVersion=$($ADB shell getprop ro.build.version.release |  tr -s ' ' '_')
+	local sdklevel=$($ADB shell getprop ro.build.version.sdk |  tr -s ' ' '_')
+
+	local deviceInfo=("${brand}" "${model}" "${androidVersion}" "${sdklevel}")
+	echo ${deviceInfo[@]}
+
+	return 0
+}
+
+###
+#@brief: 获取app的版本信息
+#
+#@param: app_package:string, APP包名
+#@echo string "app版本号"
+function getAppVersion() {
+	isDeviceConnection
+
+	if [ $? -ne 1 ]
+	then
+		return 1
+	fi
+
+	local p=$1
+	version=$($ADB shell pm dump "$p" | grep 'versionName' | cut -d'=' -f2)
+	echo $version
+
+	return 0
+}
+
+###
 #@brief: 获取设备的屏幕分辨率
 #
 #@return 0: 成功，1：失败 
@@ -328,6 +373,15 @@ function analyseFrameDrop() {
 	done
 }
 
+s=$(getAppVersion $MINI_P)
+echo $s
+s=$(getAppVersion $DOUYIN_P)
+echo $s
+s=($(getDeviceInfo))
+#echo $s
+#s=(s)
+echo ${#s[@]}
+exit
 rm -rf $VIDEO_AFTER_PATH/*
 file='videoDB/anchor_video_20190814_190000.mp4'
 pushVideo2Device $file

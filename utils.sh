@@ -9,7 +9,7 @@ ADB='/Users/wangwei/Library/Android/sdk/platform-tools/adb'
 BIN='/Users/wangwei/Documents/Project/github/video_codec_evaluation/get_frame_seq'
 
 # 因为并不是所有的应用保存的路径都一致，所以要分别处理
-VIDEO_PATH='/sdcard/相机'
+VIDEO_PATH='/sdcard/DCIM/Camera'
 VIDEO_PATH_2='/sdcard/DCIM/Camera'
 
 # ADB模拟点击的坐标均基于OWxOH的设备分辨率获取，因此需要针对不同机型进行缩放.
@@ -208,7 +208,7 @@ handleDouYin() {
 	$ADB shell am start -n "$DOUYIN"
 
 	# 2. 等待5秒，方便打开主界面
-	sleep 5
+	sleep 15
 
 	# 3. 点击+,进入视频拍摄页面
 	x=$(echo "scale=0; 540/$rw" | bc)
@@ -289,7 +289,7 @@ handleMini() {
 	$ADB shell am start -n "$MINI"
 
 	# 2. 等待5秒，方便打开主界面
-	sleep 5
+	sleep 15
 
 	# 3. 点击+,进入视频拍摄页面
 	x=$(echo "scale=0; 540/$rw" | bc)
@@ -378,10 +378,9 @@ echo $s
 s=$(getAppVersion $DOUYIN_P)
 echo $s
 s=($(getDeviceInfo))
-#echo $s
-#s=(s)
-echo ${#s[@]}
-exit
+echo ${s[@]}
+
+
 rm -rf $VIDEO_AFTER_PATH/*
 file='videoDB/anchor_video_20190814_190000.mp4'
 pushVideo2Device $file

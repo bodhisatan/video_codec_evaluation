@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
     		cv::cvtColor(subFrame, greyFrame, cv::COLOR_RGB2GRAY);
     	}
     
-		cv::imwrite(dir + "/" + boost::lexical_cast<std::string>(i) + ".png", greyFrame);
+		cv::imwrite(dir + "/" + boost::lexical_cast<std::string>(i) + ".png", subFrame);
 		//cv::imshow(wndTitle, subFrame);
 		++i;
 		cap >> frame;

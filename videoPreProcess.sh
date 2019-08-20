@@ -44,7 +44,7 @@ $ADB pull $videofile .
 echo "从Android设备复制文件成功..."
 
 echo "开始给视频每一帧打上帧号..."
-$FFMPEG -i ${filename} -vf 'drawbox=40:150:160:60:Green:fill, drawtext=fontcolor=white:fontsize=50:fontfile=/Library/Fonts/Arial\ Bold.ttf:text=%{n}:x=50:y=160' -y ${output}
+$FFMPEG -i ${filename} -vf 'drawbox=40:190:160:60:Green:fill, drawtext=fontcolor=white:fontsize=50:fontfile=/Library/Fonts/Arial\ Bold.ttf:text=%{n}:x=50:y=200' -y ${output}
 echo "视频打帧号完成, 推送视频到手机..."
 
 $ADB push $output $filePath/$output

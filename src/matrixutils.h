@@ -37,3 +37,6 @@ typedef struct VideoResolution {
 
 // 对分辨率是vr的视频帧旋转270度, 然后计算原视频帧中的像素点{in}在新视频帧中的位置.
 MES rotateMatrix270(MES in, Resolution vr);
+
+// 对分辨率是vr的视频帧旋转90度, 然后计算原视频帧中的像素点{in}在新视频帧中的位置.
+MES rotateMatrix90(MES in, Resolution vr);

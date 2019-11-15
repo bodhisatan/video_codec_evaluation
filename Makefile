@@ -1,6 +1,6 @@
 # set the complier.
 ifndef CXX
-    CXX=g++
+    CXX=g++ 
 endif
  
 ifeq (c++, $(findstring c++,$(CXX)))
@@ -45,22 +45,33 @@ ifndef SRCDIR
     SRCDIR=src
 endif
 
-LIBOBJ = $(SRCDIR)/get_frame_seq.o \
-         $(SRCDIR)/cmdlineutils.o
+DST=get_frame_seq check_dropframe
 
-get_frame_seq: $(LIBOBJ)
+all: $(DST)
+
+LIBOBJ = $(SRCDIR)/cmdlineutils.o \
+         $(SRCDIR)/matrixutils.o \
+
+get_frame_seq: $(SRCDIR)/get_frame_seq.o $(LIBOBJ) 
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
 
+check_dropframe: $(SRCDIR)/check_dropframe.o $(LIBOBJ)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
 
 # clean
 clean:
-	rm -f $(SRCDIR)/*.o get_frame_seq data/*
+	rm -f $(SRCDIR)/*.o get_frame_seq check_dropframe data/* psnr/data/*
 
 clean_data:
 	rm -f data/*
-    
+
 # build.
 $(SRCDIR)/get_frame_seq.o: 
 	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/get_frame_seq.o $(SRCDIR)/get_frame_seq.cpp $(INCLUDES)
 
+$(SRCDIR)/check_dropframe.o: 
+	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/check_dropframe.o $(SRCDIR)/check_dropframe.cpp $(INCLUDES)
+
+$(SRCDIR)/matrixutils.o: 
+	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/matrixutils.o $(SRCDIR)/matrixutils.cpp $(INCLUDES)
 

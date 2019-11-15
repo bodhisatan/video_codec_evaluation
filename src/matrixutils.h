@@ -25,6 +25,15 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <opencv2/opencv.hpp>
+
+enum EVideoType
+{
+    CAMERA_FACING_FRONT = 1,
+    CAMERA_FACING_BACK,
+    OTHERS,    
+};
+
 typedef struct MatrixElementSubscript {
   int x;
   int y;
@@ -35,8 +44,12 @@ typedef struct VideoResolution {
   int height;
 } Resolution;
 
+
 // 对分辨率是vr的视频帧旋转270度, 然后计算原视频帧中的像素点{in}在新视频帧中的位置.
 MES rotateMatrix270(MES in, Resolution vr);
 
 // 对分辨率是vr的视频帧旋转90度, 然后计算原视频帧中的像素点{in}在新视频帧中的位置.
 MES rotateMatrix90(MES in, Resolution vr);
+
+// 对vr旋转90度，然后返回旋转后其中的矩形in的新坐标。
+cv::Rect rotate90(cv::Rect in, Resolution vr);

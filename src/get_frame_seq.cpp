@@ -5,16 +5,12 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <yaml-cpp/yaml.h>
 #include <opencv2/opencv.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include "conf.h"
 #include "cmdline.h"
 #include "cmdlineutils.h"
-
-YAML::Node initConfigure() {
-	return YAML::LoadFile("conf/conf.yaml");
-}
 
 cv::Rect getSubFrameRect(YAML::Node &conf, cv::Mat &frame, int oriWidth, int oriHeight) {
 	cv::Rect rect(0, 0, 0, 0);

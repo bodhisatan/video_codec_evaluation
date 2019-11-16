@@ -9,7 +9,7 @@ endif
 
 # set the compiler's flags.
 ifndef CXXFLAGS
-    CXXFLAGS=-O2 -DNDEBUG -Wall -Wno-sign-compare -g 
+    CXXFLAGS=-O2 -DNDEBUG -Wall -Wno-sign-compare -g
 endif
 
 ifeq (g++, $(findstring g++,$(CXX)))

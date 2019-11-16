@@ -5,16 +5,16 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <yaml-cpp/yaml.h>
+
 #include <opencv2/opencv.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include "cmdline.h"
+#include "conf.h"
 #include "cmdlineutils.h"
 #include "matrixutils.h"
 
-static YAML::Node initConfigure();
 static cv::Rect getSubFrameRect(YAML::Node &conf, cv::Mat &frame, int oriWidth, int oriHeight, EVideoType vt); 
+static cv::Mat getLabel(cv::Mat &frame, cv::Rect rect, EVideoType vt);
 
 int main(int argc, char *argv[]) {
 	cv::VideoCapture cap;
@@ -32,7 +32,6 @@ int main(int argc, char *argv[]) {
 	if (!isDirExist(dir)) {
 		mkdir(dir.c_str(), S_IRWXU);
 	}
-
 
 	wndTitle = file;
 	cap.open(file);
@@ -52,7 +51,7 @@ int main(int argc, char *argv[]) {
     	}
 
     	cv::Mat subFrame;
-		subFrame = frame(subFrameRect);
+		subFrame = getLabel(frame, subFrameRect, EVideoType(oriType));
 
     	// cv::Mat greyFrame;
     	// if (frame.channels() == 1) {
@@ -111,6 +110,16 @@ cv::Rect getSubFrameRect(YAML::Node &conf, cv::Mat &frame, int oriWidth, int ori
 	return out;
 }
 
-YAML::Node initConfigure() {
-	return YAML::LoadFile("conf/conf.yaml");
+cv::Mat getLabel(cv::Mat &frame, cv::Rect rect, EVideoType vt) {
+	cv::Mat subFrame;
+
+	subFrame = frame(rect);
+
+	if (vt == CAMERA_FACING_FRONT) {
+
+	} else if (vt == CAMERA_FACING_BACK) {
+		subFrame = imgRotate(subFrame, 90, true);
+	}
+
+	return subFrame;
 }

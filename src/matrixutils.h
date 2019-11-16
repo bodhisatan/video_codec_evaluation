@@ -24,7 +24,11 @@
   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+#ifndef MATRIXUTILS_H_
+#define MATRIXUTILS_H_
 
+#include <cmath>
+#include <complex>
 #include <opencv2/opencv.hpp>
 
 enum EVideoType
@@ -51,5 +55,10 @@ MES rotateMatrix270(MES in, Resolution vr);
 // 对分辨率是vr的视频帧旋转90度, 然后计算原视频帧中的像素点{in}在新视频帧中的位置.
 MES rotateMatrix90(MES in, Resolution vr);
 
-// 对vr旋转90度，然后返回旋转后其中的矩形in的新坐标。
+// 对vr旋转90度，然后返回旋转后其中的矩形in的新坐标.
 cv::Rect rotate90(cv::Rect in, Resolution vr);
+
+// 对图像matSrc旋转angle角度，direction为旋转方向，true为逆时针旋转，false为顺时针旋转.
+cv::Mat imgRotate(cv::Mat matSrc, float angle, bool direction);
+
+#endif // MATRIXUTILS_H_

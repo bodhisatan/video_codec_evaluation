@@ -88,6 +88,7 @@ cv::Rect getSubFrameRect(YAML::Node &conf, cv::Mat &frame, int oriWidth, int ori
 	// 修正旋转
 	if (vt == CAMERA_FACING_FRONT) {
 		std::cout << "旋转270度" << std::endl;
+		out = rotate270(in, vr);
 	} else if (vt == CAMERA_FACING_BACK) {
 		std::cout << "旋转90度" << std::endl;
 		out = rotate90(in, vr);
@@ -116,7 +117,7 @@ cv::Mat getLabel(cv::Mat &frame, cv::Rect rect, EVideoType vt) {
 	subFrame = frame(rect);
 
 	if (vt == CAMERA_FACING_FRONT) {
-
+		subFrame = imgRotate(subFrame, 90, false);
 	} else if (vt == CAMERA_FACING_BACK) {
 		subFrame = imgRotate(subFrame, 90, true);
 	}

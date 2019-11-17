@@ -58,6 +58,9 @@ MES rotateMatrix90(MES in, Resolution vr);
 // 对vr旋转90度，然后返回旋转后其中的矩形in的新坐标.
 cv::Rect rotate90(cv::Rect in, Resolution vr);
 
+// 对vr旋转270度，然后返回旋转后其中的矩形in的新坐标.
+cv::Rect rotate270(cv::Rect in, Resolution vr);
+
 // 对图像matSrc旋转angle角度，direction为旋转方向，true为逆时针旋转，false为顺时针旋转.
 cv::Mat imgRotate(cv::Mat matSrc, float angle, bool direction);
 

@@ -30,6 +30,18 @@ cv::Rect rotate90(cv::Rect in, Resolution vr) {
 	return out;
 }
 
+cv::Rect rotate270(cv::Rect in, Resolution vr) {
+	cv::Rect out = {0, 0, 0, 0};
+
+	out.x      = in.y;
+	out.y      = vr.height - in.x;
+	out.width  = in.height;
+	out.height = in.width;
+	out.y      = out.y - out.height;
+
+	return out;
+} 
+
 cv::Mat imgRotate(cv::Mat matSrc, float angle, bool direction) {
     float theta    = angle * CV_PI / 180.0;
     int   nRowsSrc = matSrc.rows;

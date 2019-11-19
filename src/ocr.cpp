@@ -113,7 +113,6 @@ std::string GetOcrResult(std::string image_path) {
 
 // 在应用中，识别的数字全部为正整数。
 // 因此，如果没有识别，则返回-1，如果识别了，则返回对应的整数。
-// {"log_id":3127307901,"words_result":[{"location":{"left":4,"top":7,"width":39,"height":44},"words":"2"}],"words_result_num":1}
 int ParseOcrNumber(std::string &ocr_result) {
     int res = -1;
 

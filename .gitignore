@@ -39,6 +39,7 @@ videoDB/*
 videoAfter/*
 psnr/*
 conf/ocr.yaml
-test_*
+test_httprequest
+test_matrixutils
 get_frame_seq
 check_dropframe

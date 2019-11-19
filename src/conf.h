@@ -3,8 +3,8 @@
 
 #include <yaml-cpp/yaml.h>
 
-YAML::Node initConfigure() {
-	return YAML::LoadFile("conf/conf.yaml");
-}
+YAML::Node initConfigure();
+
+YAML::Node initOcrConf();
 
 #endif // CONF_H_

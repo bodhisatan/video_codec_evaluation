@@ -40,3 +40,29 @@ cmdline::parser checkDropFrameCmdLine(int argc, char *argv[]) {
 
 	return cmdPara;
 }
+
+bool GetFiles(const std::string &path, std::vector<std::string> &files, const std::string &exten) {
+    files.clear();
+ 
+    DIR* dp = nullptr;
+    struct dirent* dirp = nullptr;
+    if ((dp = opendir(path.c_str())) == nullptr) {
+        return false;
+    }
+ 
+    while ((dirp = readdir(dp)) != nullptr) {
+        if (dirp->d_type == DT_REG) {
+            if (exten.compare("*") == 0) {
+                files.emplace_back(static_cast<std::string>(dirp->d_name));
+            } else{
+                if (std::string(dirp->d_name).find(exten) != std::string::npos) {
+                    files.emplace_back(static_cast<std::string>(dirp->d_name));
+                }
+            }
+        }
+    }
+ 
+    closedir(dp);
+ 
+    return true;
+}

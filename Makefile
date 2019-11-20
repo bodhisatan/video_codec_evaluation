@@ -72,7 +72,7 @@ test_matrixutils: $(SRCDIR)/test/test_matrixutils.o $(LIBOBJ)
 
 # clean
 clean:
-	rm -f $(SRCDIR)/*.o $(DST) $(TEST) data/* psnr/data/*
+	rm -f $(SRCDIR)/*.o $(DST) $(TEST) $(SRCDIR)/test/*.o
 
 clean_data:
 	rm -f data/* psnr/data/*

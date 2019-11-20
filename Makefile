@@ -55,7 +55,8 @@ test: $(TEST)
 LIBOBJ = $(SRCDIR)/cmdlineutils.o \
          $(SRCDIR)/matrixutils.o \
          $(SRCDIR)/conf.o \
-         $(SRCDIR)/ocr.o
+         $(SRCDIR)/ocr.o \
+         $(SRCDIR)/frame_label.o 
 
 get_frame_seq: $(SRCDIR)/get_frame_seq.o $(LIBOBJ) 
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
@@ -91,6 +92,9 @@ $(SRCDIR)/conf.o:
 
 $(SRCDIR)/ocr.o: 
 	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/ocr.o $(SRCDIR)/ocr.cpp $(INCLUDES)
+
+$(SRCDIR)/frame_label.o: 
+	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/frame_label.o $(SRCDIR)/frame_label.cpp $(INCLUDES)
 
 $(SRCDIR)/test/test_httprequest.o: 
 	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/test/test_httprequest.o $(SRCDIR)/test/test_httprequest.cpp $(INCLUDES)

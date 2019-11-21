@@ -25,30 +25,17 @@ int main(int argc, char *argv[]) {
     // 清空目录
     DeleteFiles(dir);
 
-	// 获取帧号图像
+	// 获取帧号图像，存储在dir目录下
 	GetFrameLabel(file, oriWidth, oriHeight, EVideoType(oriType), dir);
 
-	// ocr检测
-    std::vector<std::string> files;
-    GetFiles(dir, files);
-    std::cout << "files size: " << files.size() << std::endl;
-    std::cout << "start process the ocr detect" << std::endl;
+	// ocr检测, 丢帧信息存放在v中
+    std::vector<int> v;
+    CheckFrameDrop(dir, frameNumber, v);
 
-    int ii = 0;
-    for (auto &i : files) {
-        ++ii;
-        std::string f = dir + "/" + i;
-        int res = GetOcrNumber(f);
-
-        std::cout << "...[" << ii << "/" 
-                  << frameNumber << "] process the file: " 
-                  << f << ", the res is: "<< res << std::setw(16); 
-        fflush(stdout);
-        usleep(100000);
-        std::cout << "\r\033[k";
+    for (auto &i : v) {
+        std::cout << i << " ";
     }
     std::cout << std::endl;
-    std::cout << "process the ocr detect stop" << std::endl;
 
     // 计算丢帧
     // ...

@@ -97,7 +97,7 @@ cv::Mat GetLabel(cv::Mat &frame, cv::Rect rect, EVideoType vt) {
 int GetVideoFrameNumber(const std::string &video) {
 	cv::VideoCapture cap;
 	cv::Mat frame;
-	
+
 	int frameNumber = 0;
 	if (!isFileExist(video)) {
 		return frameNumber;
@@ -112,4 +112,45 @@ int GetVideoFrameNumber(const std::string &video) {
   	}
 
   	return frameNumber;
+}
+
+bool CheckFrameDrop(const std::string &path, int videoFrameNumber, std::vector<int> &res) {
+	res.clear();
+
+	if (!isDirExist(path) || videoFrameNumber < 0) {
+		return false;
+	}
+
+	res.resize(videoFrameNumber);
+
+	std::vector<std::string> files;
+    GetFiles(path, files);
+    std::cout << "files size: " << files.size() << std::endl;
+    std::cout << ">>>begin process the ocr detect<<<" << std::endl;
+    
+    int ii = 0;
+    for (auto &i : files) {
+        ++ii;
+        std::string f = path + "/" + i;
+        int num = GetOcrNumber(f);
+
+        if (num >= 0) {
+        	++res[num];
+        }
+
+        try {
+        	std::string msg = " process the file: " + f + ", the res is: " + 
+                          boost::lexical_cast<std::string>(num);
+	        std::cout << "...[" << ii << "/" 
+	                  << videoFrameNumber << "]" << std::setw(57) << msg; 
+	        fflush(stdout);
+	        usleep(100000);
+	        std::cout << "\r\033[k";
+        } catch(...) {}
+        
+    }
+    std::cout << std::endl;
+    std::cout << ">>>end process the ocr detect<<<" << std::endl;
+
+    return true;
 }

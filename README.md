@@ -1,6 +1,18 @@
 # video_codec_evaluation
 用于对音视频编解码器进行分析，例如丢帧，卡顿等。
 
+## 编译依赖
+该项目依赖如下的项目：
+
+* ffmpeg
+* opencv
+* boost
+* yaml-cpp
+* rapidjson
+* http_request
+
+其中rapidjson和http_request是头文件，已经包含在该项目中，无需处理，但是其它的依赖需要自行解决。
+
 ## videoLabelProcess.sh
 在视频的指定区域给视频增加帧号信息。
 

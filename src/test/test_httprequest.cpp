@@ -36,16 +36,16 @@ int main(int argc, char *argv[]) {
 
     int ii = 0;
     for (auto &i : files) {
+        ++ii;
         std::string f = dir + "/" + i;
         int res = GetOcrNumber(f);
-        std::cout << "...[" << ii << "/" << frameNumber << "] process the file: " << f << ", the res is: "<< res; 
-        //printf("...process the file: %s, res is: %d", f.c_str(), res);
+
+        std::cout << "...[" << ii << "/" 
+                  << frameNumber << "] process the file: " 
+                  << f << ", the res is: "<< res << std::setw(16); 
         fflush(stdout);
         usleep(100000);
-        //printf("\r\033[k");
         std::cout << "\r\033[k";
-
-        ++ii;
     }
     std::cout << std::endl;
     std::cout << "process the ocr detect stop" << std::endl;

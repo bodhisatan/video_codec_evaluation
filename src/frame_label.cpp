@@ -1,3 +1,4 @@
+#include "cmdlineutils.h"
 #include "frame_label.h"
 
 void GetFrameLabel(const std::string &file, const int &oriWidth, const int &oriHeight, const EVideoType &vt, const std::string &dir) {
@@ -91,4 +92,24 @@ cv::Mat GetLabel(cv::Mat &frame, cv::Rect rect, EVideoType vt) {
 	}
 
 	return subFrame;
+}
+
+int GetVideoFrameNumber(const std::string &video) {
+	cv::VideoCapture cap;
+	cv::Mat frame;
+	
+	int frameNumber = 0;
+	if (!isFileExist(video)) {
+		return frameNumber;
+	}
+
+	cap.open(video);
+    cap >> frame;
+
+	while(!frame.empty()) {
+		++frameNumber;
+		cap >> frame;
+  	}
+
+  	return frameNumber;
 }

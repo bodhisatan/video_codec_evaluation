@@ -23,6 +23,16 @@ bool isDirExist(std::string dir) {
 	return true;
 }
 
+bool isFileExist(const std::string &file) {
+	std::ifstream fin(file);
+    if (!fin) {
+        std::cout << "the file: " << file << " does not exist." << std::endl;
+        return false;
+    }
+
+    return true;    
+}
+
 cmdline::parser checkDropFrameCmdLine(int argc, char *argv[]) {
 	cmdline::parser cmdPara;
 
@@ -64,5 +74,21 @@ bool GetFiles(const std::string &path, std::vector<std::string> &files, const st
  
     closedir(dp);
  
+    return true;
+}
+
+bool DeleteFiles(const std::string &path) {
+	if (!isDirExist(path)) {
+		return false;
+	}
+
+	std::vector<std::string> files;
+	GetFiles(path, files);
+
+	for (auto &i : files) {
+		std::string f = path + "/" + i;
+    	remove(f.c_str());
+    }
+
     return true;
 }

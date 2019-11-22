@@ -11,11 +11,11 @@
 #include "../frame_label.h"
 
 int main(int argc, char *argv[]) {
-    std::string file1= "videoDB/t31.mp4";
-	std::string file = "videoDB/t33.mp4";
+    std::string file1= "videoDB/t12.mp4";
+	std::string file = "videoDB/t13_drop_f2.mp4";
 	int oriWidth     = 720;
 	int oriHeight    = 1280;
-	int oriType      = 1;
+	int oriType      = 2;
 	std::string dir  = "psnr/data";
 	
     // 获取原始视频的帧数

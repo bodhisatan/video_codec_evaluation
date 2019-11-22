@@ -58,11 +58,23 @@ int main(int argc, char *argv[]) {
 	int oriHeight    = 1280;
 	int frameNumber  = 173;
 	
+    // 丢帧信息，丢前2帧.
+    std::vector<int> v;
+    for (int i = 0; i < 2; ++i) {
+        v.emplace_back(0);
+    }
+
+    for (int i = 2; i < frameNumber; ++i) {
+        v.emplace_back(1);
+    }
+
+    for (auto &i : v) {
+        std::cout << i << " ";
+    }
+    std::cout << std::endl;
+
     // 每一帧的yuv数据所占的字节大小
     int frame_bytes      = (oriWidth * oriHeight * 3) >> 1;
-    int frame_bytes_y    = oriWidth * oriHeight;
-    int frame_bytes_u    = (oriWidth * oriHeight) >> 2;
-    int frame_bytes_v    = frame_bytes_u;
 
     FILE          *f1, *f2;
     unsigned char *b1, *b2;
@@ -95,17 +107,31 @@ int main(int argc, char *argv[]) {
         std::memset(b1, 0, frame_bytes);
         std::memset(b2, 0, frame_bytes);
 
+        // 如果存在丢帧，则跳过
+        if (v[current_frame] == 0) {
+            if (1 != fread(b1, frame_bytes, 1, f1) || 1 != fread(b2, frame_bytes, 1, f2)) {
+                std::cout << "at least one file pointer get the end!" << std::endl;
+                break; 
+            } else {
+                std::cout << "n:" << current_frame + 1
+                          << std::setiosflags(std::ios::fixed) << std::setprecision(2)
+                          << " mse_avg:"  << 0  
+                          << " mse_y:"    << 0 
+                          << " mse_u:"    << 0 
+                          << " mse_v:"    << 0
+                          << " psnr_avg:" << 0
+                          << " psnr_y:"   << 0
+                          << " psnr_u:"   << 0
+                          << " psnr_v:"   << 0  
+                          << std::endl;
+                continue;
+            }
+        }
+
         if (1 != fread(b1, frame_bytes, 1, f1) || 1 != fread(b2, frame_bytes, 1, f2)) {
             std::cout << "at least one file pointer get the end!" << std::endl;
             break; 
         }
-
-        // 如果存在丢帧，则跳过
-        if (1 == 0) {
-            continue;
-        }
-
-        // std::cout << "frame_bytes: " << frame_bytes << std::endl;
 
         // 计算y分量psnr
         double mse_y   = compute_images_mse(b1, b2, oriWidth, oriHeight, frame_bytes);
@@ -123,9 +149,6 @@ int main(int argc, char *argv[]) {
                   << " psnr_u:"   << get_psnr(mse_u, 255)
                   << " psnr_v:"   << get_psnr(mse_v, 255)  
                   << std::endl;
-        // 计算u分量psnr
-
-        // 计算v分量psnr
     }
 
     // 关闭资源

@@ -20,6 +20,12 @@
 #include "matrixutils.h"
 #include "ocr.h"
 
+enum EPixFormat {
+	YUV444     = 1,
+	YUV422     = 2,
+	YUV420     = 3,
+};
+
 cv::Rect GetSubFrameRect(YAML::Node &conf, cv::Mat &frame, int oriWidth, int oriHeight, EVideoType vt); 
 cv::Mat GetLabel(cv::Mat &frame, cv::Rect rect, EVideoType vt);
 void GetFrameLabel(const std::string &file, const int &oriWidth, const int &oriHeight, const EVideoType &vt, const std::string &dir);

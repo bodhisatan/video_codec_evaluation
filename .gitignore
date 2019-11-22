@@ -43,3 +43,4 @@ test_httprequest
 test_matrixutils
 get_frame_seq
 check_dropframe
+test_psnr

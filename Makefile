@@ -46,11 +46,13 @@ ifndef SRCDIR
 endif
 
 DST=get_frame_seq check_dropframe
-TEST=test_httprequest test_matrixutils
+TEST=test_httprequest test_matrixutils test_psnr
 
 all: $(DST) $(TEST)
 
 test: $(TEST)
+
+tpsnr: test_psnr
 
 LIBOBJ = $(SRCDIR)/cmdlineutils.o \
          $(SRCDIR)/matrixutils.o \
@@ -68,6 +70,9 @@ test_httprequest: $(SRCDIR)/test/test_httprequest.o $(LIBOBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
 
 test_matrixutils: $(SRCDIR)/test/test_matrixutils.o $(LIBOBJ)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
+
+test_psnr: $(SRCDIR)/test/test_psnr.o $(LIBOBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
 
 # clean
@@ -101,3 +106,7 @@ $(SRCDIR)/test/test_httprequest.o:
 
 $(SRCDIR)/test/test_matrixutils.o: 
 	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/test/test_matrixutils.o $(SRCDIR)/test/test_matrixutils.cpp $(INCLUDES)
+
+$(SRCDIR)/test/test_psnr.o: 
+	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/test/test_psnr.o $(SRCDIR)/test/test_psnr.cpp $(INCLUDES)
+

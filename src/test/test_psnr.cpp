@@ -14,6 +14,8 @@
 #include <cmath>
 #include <complex>
 #include <iomanip>
+#include <opencv2/opencv.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include "../frame_label.h"
 
@@ -25,7 +27,7 @@ static inline double get_psnr(double mse, int max) {
     return 10.0 * log10(pow_2(max) / (mse));
 }
 
-// plane=0,1,2分别对应y,u,v各分量，默认为y分量。
+// plane=0,1,2,3分别对应y,u,v,avg各分量，默认为y分量。
 static double compute_images_mse(const unsigned char *main_data, const unsigned char *ref_data, 
     const int w, const int h, const int size, const int plane = 0) {
     
@@ -47,6 +49,68 @@ static double compute_images_mse(const unsigned char *main_data, const unsigned 
 
 
     return mse / (double) (deno);
+}
+
+// 归一化mse,将[min_mse, max_min]区间内的mse归一化到[0, normal]的level级别区间中。
+// 例如将[0, 10]中的5归一化到[0, 100]的5级区间中，则1=>20， 2=>20，3=>40...
+int mse_normal(int mse, int min_mse, int max_mse, int level, int normal) {
+    float oriInterval = (max_mse - min_mse + 1) / (float)level;
+    float normalInterval = (normal + 1) / (float)level;
+
+    std::vector<float> oriList, normalList;
+    for (int i = 0; i <= level; ++i) {
+        oriList.emplace_back(min_mse + oriInterval * i);
+        normalList.emplace_back(normalInterval * i);
+    }
+    
+    float res = 0;
+    for (int i = 1; i <= level; ++i) {
+        if ((float)mse <= oriList[i]) {
+            res =  normalList[i - 1];
+            break;
+        } 
+    }
+
+    return (int)res;
+}
+
+// plane=0,1,2分别对应y,u,v各分量，默认为y分量。
+static void compute_mse_image(const unsigned char *main_data, const unsigned char *ref_data, 
+    const int w, const int h, const int size, const int plane, int frame_no, cv::VideoWriter &writer) {
+    
+    int begin   = 0;
+    int end     = 0;
+    
+    int min_mse = 0;
+    int max_mse = 0;
+
+    int w1 = 0;
+    int h1 = 0;
+
+    if (plane == 0) {begin = 0; end = w * h; w1 = w; h1 = h;} 
+    if (plane == 1) {begin = w * h; end = (w * h) + ((w * h) >> 2); w1 = w >> 1; h1 = h >> 1;}
+    if (plane == 2) {begin = (w * h) + ((w * h) >> 2); end = size; w1 = w >> 1; h1 = h >> 1;}
+    
+    int mse = 0;
+
+    min_mse = max_mse = pow_2((int)main_data[begin] - (int)ref_data[begin]);
+
+    for (int i = begin + 1; i < end; ++i) {
+        mse = pow_2((int)main_data[i] - (int)ref_data[i]);
+        if (mse < min_mse) {min_mse = mse;}
+        if (mse > max_mse) {max_mse = mse;}
+    }
+    
+    cv::Mat greyFrame = cv::Mat(h1, w1, CV_8UC1, cv::Scalar(255));
+
+    for (int i = begin; i < end; ++i) {
+        mse = pow_2((int)main_data[i] - (int)ref_data[i]);
+        int mse_nor = mse_normal(mse, min_mse, max_mse, 4, 255);
+        int j = i - begin;
+        greyFrame.at<uchar>((int)(j / w1), (int)(j % w1)) = ((mse >255) ? 255 : mse);
+    }
+
+    writer.write(greyFrame);
 }
 
 int main(int argc, char *argv[]) {
@@ -100,6 +164,10 @@ int main(int argc, char *argv[]) {
         return -2;
     }
 
+    cv::VideoWriter writer_y = cv::VideoWriter("y.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 30, cv::Size(720, 1280), false);
+    cv::VideoWriter writer_u = cv::VideoWriter("u.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 30, cv::Size(360, 640), false);
+    cv::VideoWriter writer_v = cv::VideoWriter("v.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 30, cv::Size(360, 640), false);
+
     // 打开文件开始按每一帧读取数据然后计算.
     while (1) {
         // 处理第current_frame帧，从0开始.
@@ -127,7 +195,7 @@ int main(int argc, char *argv[]) {
                 continue;
             }
         }
-
+        
         if (1 != fread(b1, frame_bytes, 1, f1) || 1 != fread(b2, frame_bytes, 1, f2)) {
             std::cout << "at least one file pointer get the end!" << std::endl;
             break; 
@@ -138,6 +206,7 @@ int main(int argc, char *argv[]) {
         double mse_u   = compute_images_mse(b1, b2, oriWidth, oriHeight, frame_bytes, 1);
         double mse_v   = compute_images_mse(b1, b2, oriWidth, oriHeight, frame_bytes, 2);
         double mse_avg = compute_images_mse(b1, b2, oriWidth, oriHeight, frame_bytes, 3);
+
         std::cout << "n:" << current_frame + 1
                   << std::setiosflags(std::ios::fixed) << std::setprecision(2)
                   << " mse_avg:"  << mse_avg  
@@ -149,6 +218,10 @@ int main(int argc, char *argv[]) {
                   << " psnr_u:"   << get_psnr(mse_u, 255)
                   << " psnr_v:"   << get_psnr(mse_v, 255)  
                   << std::endl;
+
+        compute_mse_image(b1, b2, oriWidth, oriHeight, frame_bytes, 0, current_frame, writer_y);
+        compute_mse_image(b1, b2, oriWidth, oriHeight, frame_bytes, 1, current_frame, writer_u);
+        compute_mse_image(b1, b2, oriWidth, oriHeight, frame_bytes, 2, current_frame, writer_v);
     }
 
     // 关闭资源

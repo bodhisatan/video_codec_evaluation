@@ -47,7 +47,7 @@ double getPsnr(double mse, int max);
  */
 double computeImagesMse(const unsigned char *main_data, 
 	                      const unsigned char *ref_data,
-                        const EPixFormat  format,  
+                        const EPixFormat format,  
                         const int w, 
                         const int h,   
                         const int plane = 0);
@@ -66,7 +66,7 @@ double computeImagesMse(const unsigned char *main_data,
  */
 void computeMseImage(const unsigned char *main_data, 
 	                   const unsigned char *ref_data, 
-                     const EPixFormat  format, 
+                     const EPixFormat format, 
     				         const int w, 
     				         const int h, 
     				         const int plane, 
@@ -91,7 +91,7 @@ uchar mseNormal(int mse, int min_mse, int max_mse, int level, int normal);
  */
 bool psnrAndVisualize(const std::string &main_video, 
                       const std::string &ref_video,
-                      const EPixFormat  format, 
+                      const EPixFormat format, 
                       const int frame_count,
                       const int width,
                       const int height,

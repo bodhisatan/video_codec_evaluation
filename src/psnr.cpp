@@ -9,7 +9,7 @@ double getPsnr(double mse, int max) {
 }
 
 double computeImagesMse(const unsigned char *main_data, const unsigned char *ref_data, 
-    const EPixFormat  format, const int w, const int h, const int plane) {
+    const EPixFormat format, const int w, const int h, const int plane) {
     
     int size  = 0; 
     int begin = 0;
@@ -58,7 +58,7 @@ uchar mseNormal(int mse, int min_mse, int max_mse, int level, int normal) {
 }
 
 void computeMseImage(const unsigned char *main_data, const unsigned char *ref_data, 
-    const EPixFormat  format, const int w, const int h, const int plane, int frame_no, cv::VideoWriter &writer) {
+    const EPixFormat format, const int w, const int h, const int plane, int frame_no, cv::VideoWriter &writer) {
     
     int size    = 0;
     int begin   = 0;
@@ -101,7 +101,7 @@ void computeMseImage(const unsigned char *main_data, const unsigned char *ref_da
 }
 
 bool psnrAndVisualize(const std::string &main_video, const std::string &ref_video,
-                      const EPixFormat  format, const int frame_count,
+                      const EPixFormat format, const int frame_count,
                       const int width, const int height,  
                       const std::vector<int> &frame_drop_info) {
     if (!isFileExist(main_video) || !isFileExist(ref_video)) {

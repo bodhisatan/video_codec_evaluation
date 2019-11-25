@@ -7,4 +7,5 @@ YAML::Node initConfigure();
 
 YAML::Node initOcrConf();
 
+YAML::Node initPsnrConf();
 #endif // CONF_H_

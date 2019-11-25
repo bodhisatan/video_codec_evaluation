@@ -58,7 +58,8 @@ LIBOBJ = $(SRCDIR)/cmdlineutils.o \
          $(SRCDIR)/matrixutils.o \
          $(SRCDIR)/conf.o \
          $(SRCDIR)/ocr.o \
-         $(SRCDIR)/frame_drop_detect.o 
+         $(SRCDIR)/frame_drop_detect.o \
+		 $(SRCDIR)/psnr.o
 
 get_frame_seq: $(SRCDIR)/get_frame_seq.o $(LIBOBJ) 
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
@@ -100,6 +101,9 @@ $(SRCDIR)/ocr.o:
 
 $(SRCDIR)/frame_drop_detect.o: 
 	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/frame_drop_detect.o $(SRCDIR)/frame_drop_detect.cpp $(INCLUDES)
+
+$(SRCDIR)/psnr.o: 
+	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/psnr.o $(SRCDIR)/psnr.cpp $(INCLUDES)
 
 $(SRCDIR)/test/test_httprequest.o: 
 	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/test/test_httprequest.o $(SRCDIR)/test/test_httprequest.cpp $(INCLUDES)

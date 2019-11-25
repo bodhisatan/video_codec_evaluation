@@ -1,0 +1,3 @@
+psnr:
+  srcDir: videoDB
+  resDir: psnr/result

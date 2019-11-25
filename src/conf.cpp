@@ -7,3 +7,7 @@ YAML::Node initConfigure() {
 YAML::Node initOcrConf() {
 	return YAML::LoadFile("conf/ocr.yaml");
 }
+
+YAML::Node initPsnrConf() {
+	return YAML::LoadFile("conf/psnr.yaml");
+}

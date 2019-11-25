@@ -1,6 +1,6 @@
 #include "cmdlineutils.h"
 #include "matrixutils.h"
-#include "frame_label.h"
+#include "frame_drop_detect.h"
 
 int main(int argc, char *argv[]) {
 	cmdline::parser cmdPara = checkDropFrameCmdLine(argc, argv);

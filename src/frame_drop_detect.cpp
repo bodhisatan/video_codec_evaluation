@@ -1,5 +1,5 @@
 #include "cmdlineutils.h"
-#include "frame_label.h"
+#include "frame_drop_detect.h"
 
 void GetFrameLabel(const std::string &file, const int &oriWidth, const int &oriHeight, const EVideoType &vt, const std::string &dir) {
 	cv::VideoCapture cap;
@@ -153,4 +153,29 @@ bool CheckFrameDrop(const std::string &path, int videoFrameNumber, std::vector<i
     std::cout << ">>>end process the ocr detect<<<" << std::endl;
 
     return true;
+}
+
+cv::Size GetVideoResolution(const std::string &video, EVideoType vt) {
+	cv::Size r = cv::Size(0, 0);
+	cv::VideoCapture cap;
+	cv::Mat frame;
+
+	if (!isFileExist(video)) {
+		return r;
+	}
+
+	cap.open(video);
+    cap >> frame;
+
+	if (frame.empty()) {
+		return r;
+  	}
+
+  	if (vt == CAMERA_FACING_FRONT || vt == CAMERA_FACING_BACK) {
+  		r = cv::Size(frame.rows, frame.cols);
+  	} else {
+  		r = cv::Size(frame.cols, frame.rows);
+  	}
+  	
+  	return r;
 }

@@ -17,7 +17,7 @@
 #include <opencv2/opencv.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include "../frame_label.h"
+#include "../frame_drop_detect.h"
 
 static inline unsigned pow_2(unsigned base) {
     return base*base;
@@ -53,25 +53,27 @@ static double compute_images_mse(const unsigned char *main_data, const unsigned 
 
 // 归一化mse,将[min_mse, max_min]区间内的mse归一化到[0, normal]的level级别区间中。
 // 例如将[0, 10]中的5归一化到[0, 100]的5级区间中，则1=>20， 2=>20，3=>40...
-int mse_normal(int mse, int min_mse, int max_mse, int level, int normal) {
-    float oriInterval = (max_mse - min_mse + 1) / (float)level;
-    float normalInterval = (normal + 1) / (float)level;
+uchar mse_normal(int mse, int min_mse, int max_mse, int level, int normal) {
+    int oriInterval = (max_mse - min_mse + 1) / (int)level;
+    int normalInterval = (normal + 1) / (int)level;
 
-    std::vector<float> oriList, normalList;
+    std::vector<int> oriList;
+    std::vector<int> normalList;
+
     for (int i = 0; i <= level; ++i) {
         oriList.emplace_back(min_mse + oriInterval * i);
         normalList.emplace_back(normalInterval * i);
     }
     
-    float res = 0;
+    int res = 0;
     for (int i = 1; i <= level; ++i) {
-        if ((float)mse <= oriList[i]) {
-            res =  normalList[i - 1];
+        if (mse <= oriList[i]) {
+            res = normalList[i - 1];
             break;
         } 
     }
 
-    return (int)res;
+    return (uchar)res;
 }
 
 // plane=0,1,2分别对应y,u,v各分量，默认为y分量。
@@ -101,19 +103,26 @@ static void compute_mse_image(const unsigned char *main_data, const unsigned cha
         if (mse > max_mse) {max_mse = mse;}
     }
     
+    if (max_mse > 255) {max_mse = 255;}
+
     cv::Mat greyFrame = cv::Mat(h1, w1, CV_8UC1, cv::Scalar(255));
 
     for (int i = begin; i < end; ++i) {
         mse = pow_2((int)main_data[i] - (int)ref_data[i]);
-        int mse_nor = mse_normal(mse, min_mse, max_mse, 4, 255);
+        uchar mse_nor = mse_normal(mse, min_mse, max_mse, 8, 255);
         int j = i - begin;
-        greyFrame.at<uchar>((int)(j / w1), (int)(j % w1)) = ((mse >255) ? 255 : mse);
+        greyFrame.at<uchar>((int)(j / w1), (int)(j % w1)) = mse_nor;
     }
 
     writer.write(greyFrame);
 }
 
 int main(int argc, char *argv[]) {
+    cv::Size r1 = GetVideoResolution("videoDB/t12.mp4", CAMERA_FACING_BACK);
+    cv::Size r2 = GetVideoResolution("VideoDB/t13.mp4");
+    std::cout << "(" << r1.width << "," << r1.height << ")" << std::endl;
+    std::cout << "(" << r2.width << "," << r2.height << ")" << std::endl;
+
     std::string file1  = "videoDB/t12.yuv";
 	std::string file2   = "videoDB/t13.yuv";
 	EPixFormat  format = YUV420;

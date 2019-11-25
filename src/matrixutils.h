@@ -35,7 +35,7 @@ enum EVideoType
 {
     CAMERA_FACING_FRONT = 1,
     CAMERA_FACING_BACK,
-    OTHERS,    
+    CAMERA_OTHERS,    
 };
 
 typedef struct MatrixElementSubscript {

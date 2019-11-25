@@ -1,5 +1,5 @@
-#ifndef FRAME_LABEL_H_
-#define FRAME_LABEL_H_
+#ifndef FRAME_DROP_DETECT_H_
+#define FRAME_DROP_DETECT_H_
 
 #include <string>
 #include <fstream>
@@ -30,6 +30,7 @@ cv::Rect GetSubFrameRect(YAML::Node &conf, cv::Mat &frame, int oriWidth, int ori
 cv::Mat GetLabel(cv::Mat &frame, cv::Rect rect, EVideoType vt);
 void GetFrameLabel(const std::string &file, const int &oriWidth, const int &oriHeight, const EVideoType &vt, const std::string &dir);
 int GetVideoFrameNumber(const std::string &video);
+cv::Size GetVideoResolution(const std::string &path, EVideoType vt = CAMERA_OTHERS);
 bool CheckFrameDrop(const std::string &path, int videoFrameNumber, std::vector<int> &res);
 
-#endif // FRAME_LABEL_H_
+#endif // FRAME_DROP_DETECT_H_

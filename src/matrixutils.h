@@ -31,6 +31,14 @@
 #include <complex>
 #include <opencv2/opencv.hpp>
 
+/**
+ * 用于标记手机摄像头拍摄竖屏视频时的旋转角度.
+ * CAMERA_FACING_FRONT: 需要旋转270度。一般前置摄像头拍摄竖屏视频时需要旋转270度.
+ * CAMERA_FACING_BACK: 需要旋转90度。一般后置摄像头拍摄竖屏视频时需要旋转90度.
+ * CAMERA_OTHERS其他无需旋转的视频.
+ * 
+ * @NOTE: 并不是所有的摄像头拍摄的视频都需要旋转，只有竖屏视频时需要旋转。
+ */
 enum EVideoType
 {
     CAMERA_FACING_FRONT = 1,

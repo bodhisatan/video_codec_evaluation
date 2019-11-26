@@ -14,7 +14,7 @@ void GetFrameLabel(const std::string &file, const int &oriWidth, const int &oriH
 
     YAML::Node conf = initConfigure();
     cv::Rect subFrameRect = GetSubFrameRect(conf, frame, oriWidth, oriHeight, vt);
-
+    
     int i = 0;
 	while(!frame.empty()) {
 		char c = (char)cv::waitKey(1);
@@ -61,6 +61,8 @@ cv::Rect GetSubFrameRect(YAML::Node &conf, cv::Mat &frame, int oriWidth, int ori
 	} else if (vt == CAMERA_FACING_BACK) {
 		std::cout << "旋转90度" << std::endl;
 		out = rotate90(in, vr);
+	} else {
+		out = in;
 	}
 
 	int frameWidth  = frame.cols;

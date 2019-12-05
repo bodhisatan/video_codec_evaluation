@@ -88,6 +88,11 @@ void computeSsdImage(const unsigned char *main_data, const unsigned char *ref_da
     
     if (max_ssd > 255) {max_ssd = 255;}
 
+    {
+        min_ssd = 0;
+        max_ssd = 255;
+    }
+    
     cv::Mat greyFrame = cv::Mat(h1, w1, CV_8UC1, cv::Scalar(255));
 
     for (int i = begin; i < end; ++i) {

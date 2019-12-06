@@ -141,16 +141,17 @@ void computeBlockPsnrImage(const unsigned char *main_data, const unsigned char *
         int psnr = 0;
         
         if (ssd == 0) {
-            psnr = 100;
+            psnr = 60;
         } else {
             mse = ssd / (double)(pow2(step));
             psnr = (int)getPsnr(mse, 255);
         }
         
+        // std::cout << psnr << " ";
         // if (min_psnr > psnr) {min_psnr = psnr;}
         // if (max_psnr < psnr) {max_psnr = psnr;}
         psnr *= 1;
-        if (psnr > 255) {psnr = 255;}
+        if (psnr > 60) {psnr = 60;}
 
         greyFrame.at<uchar>((int)(i / w_t), (int)(i % w_t)) = (uchar)(psnr);
     }
@@ -312,8 +313,6 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
         computeBlockPsnrImage(b1, b2, YUV420, width, height, step, 0, current_frame, writer_y1);
 
         std::cout << "\r\033[k"; // 清空命令行.      
-
-        break;
     }
 
     // 关闭资源

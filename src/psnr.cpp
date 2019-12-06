@@ -105,10 +105,64 @@ void computeSsdImage(const unsigned char *main_data, const unsigned char *ref_da
     writer.write(greyFrame);
 }
 
+void computeBlockPsnrImage(const unsigned char *main_data, const unsigned char *ref_data, 
+    const EPixFormat format, const int w, const int h, const int step, const int plane, int frame_no, cv::VideoWriter &writer) {
+    
+    int size    = 0;
+    int begin   = 0;
+    int end     = 0;
+    
+    int w1 = 0;
+    int h1 = 0;
+
+    if (format == YUV420) {size = (w * h * 3) >> 1;}
+
+    if (plane == 0) {begin = 0; end = w * h; w1 = w; h1 = h;} 
+    if (plane == 1) {begin = w * h; end = (w * h) + ((w * h) >> 2); w1 = w >> 1; h1 = h >> 1;}
+    if (plane == 2) {begin = (w * h) + ((w * h) >> 2); end = size; w1 = w >> 1; h1 = h >> 1;}
+    
+    int w_t = w1 / step;
+    int h_t = h1 / step;
+    int pixel_count_t = w_t * h_t;
+
+    cv::Mat greyFrame = cv::Mat(h_t, w_t, CV_8UC1, cv::Scalar(255));
+    
+    for (int i = 0; i < pixel_count_t; ++i) {
+        // 对目标的每一个块求psnr.
+        int ssd = 0;
+        for (int j = 0; j < step; ++j) {
+            for (int k = 0; k < step; ++k) {
+                int pixel_index = ((i / w_t) * step + j) * w1 + ((i % w_t) * step + k) + begin;
+                ssd += pow2((int)main_data[pixel_index] - (int)ref_data[pixel_index]);
+            }
+        }
+
+        double mse  = 0.0;
+        int psnr = 0;
+        
+        if (ssd == 0) {
+            psnr = 100;
+        } else {
+            mse = ssd / (double)(pow2(step));
+            psnr = (int)getPsnr(mse, 255);
+        }
+        
+        // if (min_psnr > psnr) {min_psnr = psnr;}
+        // if (max_psnr < psnr) {max_psnr = psnr;}
+        psnr *= 1;
+        if (psnr > 255) {psnr = 255;}
+
+        greyFrame.at<uchar>((int)(i / w_t), (int)(i % w_t)) = (uchar)(psnr);
+    }
+
+    writer.write(greyFrame);
+}
+
 bool psnrAndVisualize(const std::string &main_video, const std::string &ref_video,
                       const EPixFormat format, const int frame_count,
                       const int width, const int height,  
-                      const std::vector<int> &frame_drop_info) {
+                      const std::vector<int> &frame_drop_info,
+                      const int step) {
     if (!isFileExist(main_video) || !isFileExist(ref_video)) {
         std::cout << main_video << "||" << ref_video << " 不存在!" << std::endl; 
         return false;
@@ -183,7 +237,11 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
                                                30, 
                                                cv::Size(width >> 1, height >> 1), 
                                                false);
-
+    cv::VideoWriter writer_y1 = cv::VideoWriter(resDir + "/y1.avi", 
+                                               cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 
+                                               30, 
+                                               cv::Size(width / step, height / step), 
+                                               false);
     // 打开文件开始按每一帧读取数据然后计算.
     while (1) {
         // 处理第current_frame帧，从0开始.
@@ -251,8 +309,11 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
         computeSsdImage(b1, b2, YUV420, width, height, 0, current_frame, writer_y);
         computeSsdImage(b1, b2, YUV420, width, height, 1, current_frame, writer_u);
         computeSsdImage(b1, b2, YUV420, width, height, 2, current_frame, writer_v);  
+        computeBlockPsnrImage(b1, b2, YUV420, width, height, step, 0, current_frame, writer_y1);
 
         std::cout << "\r\033[k"; // 清空命令行.      
+
+        break;
     }
 
     // 关闭资源

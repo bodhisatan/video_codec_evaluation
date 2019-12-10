@@ -24,16 +24,16 @@ endif
 
 # set the third-party requirements
 ifdef LIBS
-    LIBS += $(shell pkg-config --libs opencv yaml-cpp libavcodec libavformat libswscale libavdevice libavutil)
+    LIBS += $(shell pkg-config --libs opencv yaml-cpp libavcodec libavformat libavdevice libavutil)
 else
-    LIBS=$(shell pkg-config --libs opencv yaml-cpp libavcodec libavformat libswscale libavdevice libavutil)
+    LIBS=$(shell pkg-config --libs opencv yaml-cpp libavcodec libavformat libavdevice libavutil)
 endif
 
 # set the third-party requirements
 ifdef INCLUDES
-    INCLUDES += $(shell pkg-config --cflags opencv yaml-cpp libavcodec libavformat libswscale libavdevice libavutil)
+    INCLUDES += $(shell pkg-config --cflags opencv yaml-cpp libavcodec libavformat libavdevice libavutil)
 else
-    INCLUDES=$(shell pkg-config --cflags opencv yaml-cpp libavcodec libavformat libswscale libavdevice libavutil)
+    INCLUDES=$(shell pkg-config --cflags opencv yaml-cpp libavcodec libavformat libavdevice libavutil)
 endif
 
 # set the PREFIEX

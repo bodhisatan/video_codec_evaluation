@@ -30,6 +30,7 @@ extern "C" {
   #include "libavcodec/avcodec.h"
   #include "libavformat/avformat.h"
   #include "libavdevice/avdevice.h"
+  #include "libavutil/imgutils.h"
 }
 
 #define CONFIG_AVDEVICE 1
@@ -135,10 +136,26 @@ bool psnrAndVisualize(const std::string &main_video,
  * 将MP4文件转为对应的yuv原始数据文件, 
  * 并存储在conf/psnr.yaml中配置的conf["psnr"]["resDir"]目录中。
  * @param mp4: 待转为yuv格式的MP4文件的路径.
- * @param t: 旋转角度，自动旋转为合适的方向.
  * @param yuv: yuv文件的存放地址.
  * @return: 成功返回true，失败返回false.
  * @TODO: 目前没有对t参数做处理，因此只能处理没有旋转的视频的mp4转yuv.
  */
-bool mp42yuv(const std::string &mp4, const EVideoType &t, std::string &yuv);
+bool mp42yuv(const std::string &mp4, std::string &yuv);
+
+/**
+ * 获取视频的旋转角度.
+ * @param avStream: 指定视频流.
+ */
+int getRotateAngle(const AVStream *avStream);
+
+/**
+ * 对src 旋转90度，然后存储在dst中.
+ */
+void Rotate90(const AVFrame* src, AVFrame* dst);
+
+/**
+ * 对src 旋转270度，然后存储在dst中.
+ */
+void Rotate270(const AVFrame* src, AVFrame* dst);
+
 #endif // PSNR_H_

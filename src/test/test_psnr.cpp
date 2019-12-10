@@ -23,7 +23,7 @@
 int main(int argc, char *argv[]) {
     std::string f1 = "videoDB/t42.mp4";
     std::string f2 = "videoDB/t43.mp4";
-    EVideoType t   = CAMERA_OTHERS;
+    EVideoType t   = CAMERA_FACING_BACK;
     bool drop_frame_detect = false;
 
     YAML::Node conf = initPsnrConf();
@@ -37,11 +37,7 @@ int main(int argc, char *argv[]) {
 
     // 获取分辨率信息和帧数信息
     cv::Size r1 = GetVideoResolution(f1, t);
-    cv::Size r2 = GetVideoResolution(f2);
-
-    std::cout << "(" << r1.width << "," << r1.height << ")" << std::endl;
-    std::cout << "(" << r2.width << "," << r2.height << ")" << std::endl;
-
+    
     int oriWidth     = r1.width;
 	int oriHeight    = r1.height;
 	int frameNumber  = GetVideoFrameNumber(f1);
@@ -70,7 +66,7 @@ int main(int argc, char *argv[]) {
     
     std::string yuv1 = "";
     std::string yuv2 = "";
-    if (!mp42yuv(f1, CAMERA_OTHERS, yuv1) || !mp42yuv(f2, CAMERA_OTHERS, yuv2)) {
+    if (!mp42yuv(f1, yuv1) || !mp42yuv(f2, yuv2)) {
         std::cout << "生成yuv文件错误." << std::endl;
         return 0;
     }

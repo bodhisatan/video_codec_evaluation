@@ -65,7 +65,4 @@ options:
   -?, --help               print this message
 
 $ check_dropframe -i videoDB/t3.mp4 -w 720 -h 1280 -t 1
-```
-
-
- 
+``` 

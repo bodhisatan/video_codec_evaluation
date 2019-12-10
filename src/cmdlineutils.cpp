@@ -11,6 +11,17 @@ cmdline::parser initCmdLine(int argc, char *argv[]) {
 	return cmdPara;
 }
 
+cmdline::parser vpsnrCmdLine(int argc, char *argv[]) {
+	cmdline::parser cmdPara;
+
+	cmdPara.add<std::string>("refVideo", 'r', "含有噪声视频的参考视频", true, "");
+	cmdPara.add<std::string>("mainVideo", 'm', "含有噪声的视频", true, "");
+	cmdPara.add<int>("blockSize", 'b', "计算分块psnr的块大小", false, 1);
+	cmdPara.add<bool>("dropFrameDetect", 'd', "是否执行丢帧检测", false, false);
+
+	return cmdPara;
+}
+
 bool isDirExist(std::string dir) {
 	if (dir == "") {
 		return false;

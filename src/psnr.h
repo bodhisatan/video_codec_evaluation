@@ -143,12 +143,6 @@ bool psnrAndVisualize(const std::string &main_video,
 bool mp42yuv(const std::string &mp4, std::string &yuv);
 
 /**
- * 获取视频的旋转角度.
- * @param avStream: 指定视频流.
- */
-int getRotateAngle(const AVStream *avStream);
-
-/**
  * 对src 旋转90度，然后存储在dst中.
  */
 void Rotate90(const AVFrame* src, AVFrame* dst);

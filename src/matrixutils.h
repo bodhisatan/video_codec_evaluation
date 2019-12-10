@@ -31,6 +31,13 @@
 #include <complex>
 #include <opencv2/opencv.hpp>
 
+extern "C" {
+  #include "libavcodec/avcodec.h"
+  #include "libavformat/avformat.h"
+  #include "libavdevice/avdevice.h"
+  #include "libavutil/imgutils.h"
+}
+
 /**
  * 用于标记手机摄像头拍摄竖屏视频时的旋转角度.
  * CAMERA_FACING_FRONT: 需要旋转270度。一般前置摄像头拍摄竖屏视频时需要旋转270度.
@@ -43,7 +50,8 @@ enum EVideoType
 {
     CAMERA_FACING_FRONT = 1,
     CAMERA_FACING_BACK,
-    CAMERA_OTHERS,    
+    CAMERA_OTHERS, 
+    CAMERA_ERROR   
 };
 
 typedef struct MatrixElementSubscript {
@@ -71,5 +79,11 @@ cv::Rect rotate270(cv::Rect in, Resolution vr);
 
 // 对图像matSrc旋转angle角度，direction为旋转方向，true为逆时针旋转，false为顺时针旋转.
 cv::Mat imgRotate(cv::Mat matSrc, float angle, bool direction);
+
+// 解析mp4文件并返回旋转数据.
+EVideoType getRotateAngle(const std::string &mp4);
+
+// 获取视频流的旋转角度.
+int getRotateAngle(const AVStream *avStream);
 
 #endif // MATRIXUTILS_H_

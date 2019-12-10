@@ -170,7 +170,7 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
     }
 
     YAML::Node conf = initPsnrConf();
-    if (!conf["psnr"] || !conf["psnr"]["srcDir"] || !conf["psnr"]["resDir"]) {
+    if (!conf["psnr"] || !conf["psnr"]["ocrSrcDir"] || !conf["psnr"]["resDir"]) {
         std::cout << "解析psnr.yaml文件失败!" << std::endl;
         return false;
     }
@@ -327,7 +327,7 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
 
 bool mp42yuv(const std::string &mp4, std::string &yuv) {
     YAML::Node conf = initPsnrConf();
-    if (!conf["psnr"] || !conf["psnr"]["srcDir"] || !conf["psnr"]["resDir"]) {
+    if (!conf["psnr"] || !conf["psnr"]["ocrSrcDir"] || !conf["psnr"]["resDir"]) {
         std::cout << "解析psnr.yaml文件失败!" << std::endl;
         return false;
     }
@@ -500,29 +500,6 @@ bool mp42yuv(const std::string &mp4, std::string &yuv) {
     avformat_free_context(pContext);
 
     return true;
-}
-
-int getRotateAngle(const AVStream *avStream) {
-    AVDictionaryEntry *tag = NULL;
-    int rotate = -1;
-    tag = av_dict_get(avStream->metadata, "rotate", tag, 0);
-    if (tag==NULL) {
-        rotate = 0;
-    } else {
-        int angle = atoi(tag->value);
-        angle %= 360;
-        if (angle == 90) {
-            rotate = 90;
-        } else if (angle == 180) {
-            rotate = 180;
-        } else if (angle == 270) {
-            rotate = 270;
-        } else {
-            rotate = 0;
-        }
-    }
-
-    return rotate;
 }
 
 void Rotate90(const AVFrame* src, AVFrame* dst) {

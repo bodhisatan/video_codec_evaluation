@@ -98,3 +98,85 @@ cv::Mat imgRotate(cv::Mat matSrc, float angle, bool direction) {
     }
     return matRet;
 }
+
+EVideoType getRotateAngle(const std::string &mp4) {
+    EVideoType ret = CAMERA_OTHERS;
+
+    // 1. register all codecs, demux and protocols
+    avdevice_register_all();
+
+    //2. 得到一个ffmpeg的上下文（上下文里面封装了视频的比特率，分辨率等等信息...非常重要）
+    AVFormatContext* pContext = avformat_alloc_context();
+    if (!pContext) {
+        std::cout << "could not allocate context." << std::endl;
+        return CAMERA_ERROR;
+    }
+
+    //3. 打开视频
+    if (avformat_open_input(&pContext, mp4.c_str(), NULL, NULL) < 0) {
+        std::cout << "open failed." << std::endl;
+        return CAMERA_ERROR;
+    }
+
+    //4. 获取视频信息，视频信息封装在上下文中
+    if (avformat_find_stream_info(pContext, NULL) < 0) {
+        std::cout << "get the information failed." << std::endl;
+        return CAMERA_ERROR;
+    }
+
+    //5. 用来记住视频流的索引
+    AVStream *st = NULL;
+    int video_stream_idx = -1;
+    //从上下文中寻找找到视频流
+    for (int i = 0; i < pContext->nb_streams; ++i) {
+        //codec：每一个流 对应的解码上下文
+        //codec_type：流的类型
+        st = pContext->streams[i];
+        enum AVMediaType type = st->codecpar->codec_type;
+        if (type == AVMEDIA_TYPE_VIDEO) {
+            video_stream_idx = i;
+            break;
+        }
+    }
+
+    if (video_stream_idx == -1) {
+        std::cout << "can not find video stream." << std::endl;
+        return CAMERA_ERROR;
+    }
+
+    int rotate = getRotateAngle(st);
+    if (rotate == 90) {
+        ret = CAMERA_FACING_BACK;
+    } else if (rotate == 270) {
+        ret = CAMERA_FACING_FRONT;
+    } else {
+        ret = CAMERA_OTHERS;
+    }
+
+    avformat_free_context(pContext);
+    
+    return ret;
+}
+
+int getRotateAngle(const AVStream *avStream) {
+    AVDictionaryEntry *tag = NULL;
+    int rotate = -1;
+    tag = av_dict_get(avStream->metadata, "rotate", tag, 0);
+    if (tag==NULL) {
+        rotate = 0;
+    } else {
+        int angle = atoi(tag->value);
+        angle %= 360;
+        if (angle == 90) {
+            rotate = 90;
+        } else if (angle == 180) {
+            rotate = 180;
+        } else if (angle == 270) {
+            rotate = 270;
+        } else {
+            rotate = 0;
+        }
+    }
+
+    return rotate;
+}

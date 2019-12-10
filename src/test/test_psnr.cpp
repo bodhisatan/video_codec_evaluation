@@ -19,25 +19,29 @@
 
 #include "../frame_drop_detect.h"
 #include "../psnr.h"
+#include "../matrixutils.h"
 
 int main(int argc, char *argv[]) {
-    std::string f1 = "videoDB/t42.mp4";
-    std::string f2 = "videoDB/t43.mp4";
-    EVideoType t   = CAMERA_FACING_BACK;
-    bool drop_frame_detect = false;
+    std::string f1 = "videoDB/t12.mp4";
+    std::string f2 = "videoDB/t13.mp4";
+    bool drop_frame_detect = true;
 
     YAML::Node conf = initPsnrConf();
-    if (!conf["psnr"] || !conf["psnr"]["srcDir"] || !conf["psnr"]["resDir"]) {
+    if (!conf["psnr"] || !conf["psnr"]["ocrSrcDir"] || !conf["psnr"]["resDir"]) {
         std::cout << "解析psnr.yaml文件失败!" << std::endl;
         return 0;
     }
 
-    std::string srcDir = conf["psnr"]["srcDir"].as<std::string>();
+    std::string ocrSrcDir = conf["psnr"]["ocrSrcDir"].as<std::string>();
     std::string resDir = conf["psnr"]["resDir"].as<std::string>();
 
+    // 获取原视频旋转角度
+    EVideoType t   = getRotateAngle(f1);
+    std::cout << "t: " << t << std::endl;
     // 获取分辨率信息和帧数信息
     cv::Size r1 = GetVideoResolution(f1, t);
-    
+    std::cout << "( " << r1.width << "," << r1.height << " )" << std::endl;
+
     int oriWidth     = r1.width;
 	int oriHeight    = r1.height;
 	int frameNumber  = GetVideoFrameNumber(f1);
@@ -47,11 +51,11 @@ int main(int argc, char *argv[]) {
 
     if (drop_frame_detect) {
         // 清空目录
-        DeleteFiles(srcDir);
+        DeleteFiles(ocrSrcDir);
         // 获取帧号图像，存储在dir目录下
-        GetFrameLabel(f2, oriWidth, oriHeight, t, srcDir);
+        GetFrameLabel(f2, oriWidth, oriHeight, t, ocrSrcDir);
         // ocr检测, 丢帧信息存放在v中
-        CheckFrameDrop(srcDir, frameNumber, v);
+        CheckFrameDrop(ocrSrcDir, frameNumber, v);
 
         std::cout << "丢帧信息如下:" << std::endl;
         for (auto &i : v) {

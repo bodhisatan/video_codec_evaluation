@@ -324,3 +324,155 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
 
     return true;
 } 
+
+bool mp42yuv(const std::string &mp4, const EVideoType &t, std::string &yuv) {
+    YAML::Node conf = initPsnrConf();
+    if (!conf["psnr"] || !conf["psnr"]["srcDir"] || !conf["psnr"]["resDir"]) {
+        std::cout << "解析psnr.yaml文件失败!" << std::endl;
+        return false;
+    }
+
+    std::string resDir = conf["psnr"]["resDir"].as<std::string>();
+    if (!isDirExist(resDir)) {
+        mkdir(resDir.c_str(), S_IRWXU);
+    }
+
+    std::string file_name = mp4.substr(mp4.find_last_of('/') + 1);
+    std::string file_yuv  = resDir + "/" + 
+                            file_name.substr(0, file_name.find_last_of('.')) + ".yuv";
+    yuv = file_yuv;
+    std::cout << "file_name: " << file_name << ", yuv: " << yuv << std::endl;
+    FILE *yuv_file = fopen(file_yuv.c_str(), "wb");
+    if (!yuv_file)
+        return false;
+
+    // 1. register all codecs, demux and protocols
+    avdevice_register_all();
+
+    //2. 得到一个ffmpeg的上下文（上下文里面封装了视频的比特率，分辨率等等信息...非常重要）
+    AVFormatContext* pContext = avformat_alloc_context();
+    if (!pContext) {
+        std::cout << "could not allocate context." << std::endl;
+        return false;
+    }
+
+    //3. 打开视频
+    if (avformat_open_input(&pContext, mp4.c_str(), NULL, NULL) < 0) {
+        std::cout << "open failed." << std::endl;
+        return false;
+    }
+
+    //4. 获取视频信息，视频信息封装在上下文中
+    if (avformat_find_stream_info(pContext, NULL) < 0) {
+        std::cout << "get the information failed." << std::endl;
+        return false;
+    }
+
+    //5. 用来记住视频流的索引
+    int video_stream_idx = -1;
+    //从上下文中寻找找到视频流
+    for (int i = 0; i < pContext->nb_streams; ++i) {
+        //codec：每一个流 对应的解码上下文
+        //codec_type：流的类型
+        AVStream *st = pContext->streams[i];
+        enum AVMediaType type = st->codecpar->codec_type;
+        if (type == AVMEDIA_TYPE_VIDEO) {
+            video_stream_idx = i;
+            break;
+        }
+    }
+
+    if (video_stream_idx == -1) {
+        std::cout << "can not find video stream." << std::endl;
+        return false;
+    }
+
+    av_dump_format(pContext, 0, mp4.c_str(), 0);
+
+    //6. 获取编码器上下文和编码器
+    AVCodecContext* pCodecCtx = avcodec_alloc_context3(NULL);
+    if (!pCodecCtx) {
+        std::cout << "get codec context failed." << std::endl;
+        return false;
+    }
+
+    if (avcodec_parameters_to_context(pCodecCtx, pContext->streams[video_stream_idx]->codecpar) < 0) {
+        std::cout << "get codec parameters failed." << std::endl;
+        return false;
+    }
+
+    AVCodec *pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
+    
+    //7. 打开解码器
+    if (avcodec_open2(pCodecCtx, pCodec, NULL) < 0) {
+        std::cout << "decode the video stream failed." << std::endl;
+        return false;
+    }
+
+    AVPacket *pkt = (AVPacket *) av_malloc(sizeof(AVPacket));
+    av_init_packet(pkt);
+    
+
+    int f = -1;
+    int f1 = -1;
+    int f2 = -1;
+
+    while (true) {
+        if (av_read_frame(pContext, pkt) < 0) {
+            fclose(yuv_file);
+            break;
+        }
+
+        if (pkt->stream_index != video_stream_idx) {
+            continue;
+        }
+        
+        int got_picture = 0;
+        int ret = 0;
+        AVFrame *pFrame = av_frame_alloc();
+        
+        ret = avcodec_decode_video2(pCodecCtx, pFrame, &got_picture, pkt);
+        ++f1;
+
+        if (ret < 0) {
+            break;
+        }
+
+        ++f2;
+
+        // std::cout << "got_picture: " << got_picture << std::endl;
+        if (got_picture) {
+            ++f;
+            char* buf = new char[pCodecCtx->height * pCodecCtx->width * 3 / 2];
+            memset(buf, 0, pCodecCtx->height * pCodecCtx->width * 3 / 2);
+            int height = pCodecCtx->height;
+            int width = pCodecCtx->width;
+            int a = 0, i;
+            for (i = 0; i<height; i++) {
+                memcpy(buf + a, pFrame->data[0] + i * pFrame->linesize[0], width);
+                a += width;
+            }
+            for (i = 0; i<height / 2; i++) {
+                memcpy(buf + a, pFrame->data[1] + i * pFrame->linesize[1], width / 2);
+                a += width / 2;
+            }
+            for (i = 0; i<height / 2; i++) {
+                memcpy(buf + a, pFrame->data[2] + i * pFrame->linesize[2], width / 2);
+                a += width / 2;
+            }
+            fwrite(buf, 1, pCodecCtx->height * pCodecCtx->width * 3 / 2, yuv_file);
+            
+            delete[] buf;
+            buf = NULL;
+        }
+        av_frame_free(&pFrame);
+    }
+
+    // std::cout << "the f is : " << f << ", f1 is : " << f1 << ", f2 is : " << f2 << std::endl;
+
+    fclose(yuv_file);
+    avcodec_close(pCodecCtx);
+    avformat_free_context(pContext);
+
+    return true;
+}

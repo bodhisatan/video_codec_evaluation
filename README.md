@@ -8,12 +8,15 @@
 * opencv
 * boost
 * yaml-cpp
+* pkg-config
 * rapidjson
 * http_request
 
 其中rapidjson和http_request是头文件，已经包含在该项目中，无需处理，但是其它的依赖需要自行解决。
-
+编译过程依赖pkg-config对依赖进行管理，因此需要首先安装pkg-config。
 安装好各种编译依赖之后，直接运行`make`即生成项目的各种工具。
+
+在编译过程中，可能会出现**无法找到xxx.pc**的提示，此时，按照提示，将对应依赖的pkg-config配置文件路径增加到`PKG_CONFIG_PATH`环境变量即可。
 
 项目默认关闭debug选项，也就是很多中间结果信息没有打印出来，如果希望开启debug选项，在编译的过程中需要增加`-DDEBUG`选项。具体方法为，修改`Makefile`的如下代码：
 

@@ -266,10 +266,14 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
         std::memset(b1, 0, frame_bytes);
         std::memset(b2, 0, frame_bytes);
 
-        // 如果存在丢帧，则跳过
+        // 如果存在丢帧，则参考视频需要跳过
         if (frame_drop_info[current_frame] == 0) {
-            if (1 != fread(b1, frame_bytes, 1, f2)) {
-                std::cout << std::endl << "...at least one file pointer get the end!" << std::endl;
+            #ifdef DEBUG
+            std::cout << std::endl << "...mainVideo存在丢帧帧，跳过refVideo的对应帧." << std::endl;
+            #endif
+
+            if (1 != fread(b2, frame_bytes, 1, f2)) {
+                std::cout << std::endl << "...refVideo file pointer get the end!" << std::endl;
                 break; 
             } else {
                 psnr_log_f << "n:" << current_frame + 1
@@ -289,6 +293,23 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
             }
         }
         
+        // 如果存在重复帧，则噪声视频需要跳过.
+        int repeat = (frame_drop_info[current_frame] - 1);
+        while (repeat > 0) {
+            #ifdef DEBUG
+            std::cout << std::endl << "...mainVideo存在重复帧，跳过mainVideo的对应帧." << std::endl;
+            #endif
+            
+            if (1 != fread(b1, frame_bytes, 1, f1)) {
+                std::cout << std::endl << "...mainVideo file pointer get the end!" << std::endl;
+                break; 
+            } else {
+                --repeat;
+                std::memset(b1, 0, frame_bytes);
+            }
+        }
+        
+        // 对齐之后进行计算.
         if (1 != fread(b1, frame_bytes, 1, f1) || 1 != fread(b2, frame_bytes, 1, f2)) {
             std::cout << std::endl << "...at least one file pointer get the end!" << std::endl;
             break; 

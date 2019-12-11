@@ -51,18 +51,27 @@ def psnrFileAnalysis(psnrFilePath):
             mse_v_list.append(mse_v)
 
             psnr_avg = line.split('psnr_avg:')[1].split(' ')[0]
+            if psnr_avg.strip() == 'inf':
+                psnr_avg = '60'
             psnr_avg_list.append(psnr_avg)
 
             psnr_y = line.split('psnr_y:')[1].split(' ')[0]
+            if psnr_y.strip() == 'inf':
+                psnr_y = '60'
+    
             psnr_y_list.append(psnr_y)
 
             psnr_u = line.split('psnr_u:')[1].split(' ')[0]
+            if psnr_u.strip() == 'inf':
+                psnr_u = '60'
             psnr_u_list.append(psnr_u)
 
             psnr_v = line.split('psnr_v:')[1].split(' ')[0]
+            if psnr_v.strip() == 'inf':
+                psnr_v = '60'
             psnr_v_list.append(psnr_v)
 
-        return pic_x_list ,psnr_avg_list,psnr_y_list,psnr_u_list,psnr_v_list,mse_avg_list,mse_y_list,mse_u_list,mse_v_list
+        return pic_x_list,psnr_avg_list,psnr_y_list,psnr_u_list,psnr_v_list,mse_avg_list,mse_y_list,mse_u_list,mse_v_list
 
 
 def psnr_graph(pic_x_list,psnr_avg_list,psnr_y_list,psnr_u_list,psnr_v_list):
@@ -75,7 +84,6 @@ def psnr_graph(pic_x_list,psnr_avg_list,psnr_y_list,psnr_u_list,psnr_v_list):
     """
     # 创建绘图对象
     plt.figure(figsize=(10,8))
-    
     plt.plot(map(eval, pic_x_list),map(eval, psnr_avg_list), "r",linewidth=1,label='psnr_avg')
     plt.plot(map(eval, pic_x_list),map(eval, psnr_y_list), "g",linewidth=1,label='psnr_y')
     plt.plot(map(eval, pic_x_list),map(eval, psnr_u_list), "b",linewidth=1,label='psnr_u')
@@ -92,19 +100,12 @@ def psnr_graph(pic_x_list,psnr_avg_list,psnr_y_list,psnr_u_list,psnr_v_list):
     ax=plt.gca()
     ax.xaxis.set_major_locator(xmajorLocator)
     ax.yaxis.set_major_locator(ymajorLocator)
-    plt.ylim(0,55)
+    plt.ylim(0,65)
   
     
     plt.grid(True)
     # plt.show()
     plt.savefig('psnr.png')
-
-
-
-
-
-
-
 
 def mse_graph(pic_x_list,mse_avg_list,mse_y_list,mse_u_list,mse_v_list):
     """
@@ -141,4 +142,3 @@ if __name__ == '__main__':
     res = psnrFileAnalysis(sys.argv[1])
     psnr_graph(res[0],res[1],res[2],res[3],res[4])
     mse_graph(res[0], res[5], res[6], res[7], res[8])
-

@@ -56,10 +56,14 @@ cv::Rect GetSubFrameRect(YAML::Node &conf, cv::Mat &frame, int oriWidth, int ori
 	
 	// 修正旋转
 	if (vt == CAMERA_FACING_FRONT) {
-		std::cout << "旋转270度" << std::endl;
+		#ifdef DEBUG
+		std::cout << "...ref_video视频旋转了270度" << std::endl;
+		#endif
 		out = rotate270(in, vr);
 	} else if (vt == CAMERA_FACING_BACK) {
-		std::cout << "旋转90度" << std::endl;
+		#ifdef DEBUG
+		std::cout << "...ref_video视频旋转了90度" << std::endl;
+		#endif
 		out = rotate90(in, vr);
 	} else {
 		out = in;
@@ -71,13 +75,18 @@ cv::Rect GetSubFrameRect(YAML::Node &conf, cv::Mat &frame, int oriWidth, int ori
 	float ratioX      = oriWidth * 1.0 / frameWidth;
 	float ratioY      = oriHeight * 1.0 / frameHeight;
 
-	std::cout << "ratioX: " << ratioX << ", ratioY:" << ratioY << std::endl;
-	
+	#ifdef DEBUG
+	std::cout << "...获取图像的缩放分辨率: ratioX=" << ratioX << ", ratioY=" << ratioY << std::endl;
+	#endif
+
 	out.x      = int(out.x / ratioX);
 	out.y      = int(out.y / ratioY);
 	out.width  = int(out.width / ratioX);
 	out.height = int(out.height / ratioY);
-	std::cout << "x:" << out.x << ", y:" << out.y << ", width:" << out.width << ",height:" << out.height << std::endl; 
+
+	#ifdef DEBUG
+	std::cout << "...获取标签的坐标：x=" << out.x << ", y=" << out.y << ", width=" << out.width << ",height=" << out.height << std::endl; 
+	#endif
 
 	return out;
 }
@@ -127,8 +136,12 @@ bool CheckFrameDrop(const std::string &path, int videoFrameNumber, std::vector<i
 
 	std::vector<std::string> files;
     GetFiles(path, files);
-    std::cout << "files size: " << files.size() << std::endl;
-    std::cout << ">>>begin process the ocr detect<<<" << std::endl;
+
+    #ifdef DEBUG
+    std::cout << "...标签图片文件下的图片数量: " << files.size() << std::endl;
+    #endif
+
+    std::cout << "...开始进行数字图片的OCR识别" << std::endl;
     
     int ii = 0;
     for (auto &i : files) {
@@ -143,8 +156,8 @@ bool CheckFrameDrop(const std::string &path, int videoFrameNumber, std::vector<i
         try {
         	std::string msg = " process the file: " + f + ", the res is: " + 
                           boost::lexical_cast<std::string>(num);
-	        std::cout << "...[" << ii << "/" 
-	                  << videoFrameNumber << "]" << std::setw(57) << msg; 
+	        std::cout << "......[" << ii << "/" 
+	                  << videoFrameNumber << "]" << std::setw(60) << msg; 
 	        fflush(stdout);
 	        usleep(100000);
 	        std::cout << "\r\033[k";
@@ -152,8 +165,8 @@ bool CheckFrameDrop(const std::string &path, int videoFrameNumber, std::vector<i
         
     }
     std::cout << std::endl;
-    std::cout << ">>>end process the ocr detect<<<" << std::endl;
-
+    std::cout << "...数字图片的OCR识别结束" << std::endl;
+    std::cout << "丢帧检测结束" << std::endl;
     return true;
 }
 

@@ -13,6 +13,44 @@
 
 其中rapidjson和http_request是头文件，已经包含在该项目中，无需处理，但是其它的依赖需要自行解决。
 
+安装好各种编译依赖之后，直接运行`make`即生成项目的各种工具。
+
+项目默认关闭debug选项，也就是很多中间结果信息没有打印出来，如果希望开启debug选项，在编译的过程中需要增加`-DDEBUG`选项。具体方法为，修改`Makefile`的如下代码：
+
+```shell
+# set the complier.
+ifndef CXX
+    CXX=g++ 
+endif
+ 
+ifeq (c++, $(findstring c++,$(CXX)))
+  CXX=g++
+endif
+
+# set the compiler's flags.
+ifndef CXXFLAGS
+    CXXFLAGS=-O2 -DNDEBUG -Wall -Wno-sign-compare -g
+endif
+```
+
+为
+
+```shell
+# set the complier.
+ifndef CXX
+    CXX=g++ 
+endif
+ 
+ifeq (c++, $(findstring c++,$(CXX)))
+  CXX=g++
+endif
+
+# set the compiler's flags.
+ifndef CXXFLAGS
+    CXXFLAGS=-O2 -DDEBUG -Wall -Wno-sign-compare -g
+endif
+```
+
 ## videoLabelProcess.sh
 在视频的指定区域给视频增加帧号信息。
 

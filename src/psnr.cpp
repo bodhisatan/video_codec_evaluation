@@ -164,6 +164,8 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
                       const int width, const int height,  
                       const std::vector<int> &frame_drop_info,
                       const int step) {
+    std::cout << "开始计算psnr" << std::endl;
+
     if (!isFileExist(main_video) || !isFileExist(ref_video)) {
         std::cout << main_video << "||" << ref_video << " 不存在!" << std::endl; 
         return false;
@@ -223,11 +225,13 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
     }
 
     // 空间psnr可视化, 分别将y/u/v各分量的差值写入视频文件.
+    /* 因为u,v分量的折损较小，所以不用可视化，如果需要，可以打开注释的代码.
     cv::VideoWriter writer_y = cv::VideoWriter(resDir + "/y.avi", 
                                                cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 
                                                30, 
                                                cv::Size(width, height), 
                                                false);
+
     cv::VideoWriter writer_u = cv::VideoWriter(resDir + "/u.avi", 
                                                cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 
                                                30, 
@@ -238,7 +242,8 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
                                                30, 
                                                cv::Size(width >> 1, height >> 1), 
                                                false);
-    cv::VideoWriter writer_y1 = cv::VideoWriter(resDir + "/y1.avi", 
+    */
+    cv::VideoWriter writer_y = cv::VideoWriter(resDir + "/y.avi", 
                                                cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 
                                                30, 
                                                cv::Size(width / step, height / step), 
@@ -263,8 +268,8 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
 
         // 如果存在丢帧，则跳过
         if (frame_drop_info[current_frame] == 0) {
-            if (1 != fread(b1, frame_bytes, 1, f1) || 1 != fread(b2, frame_bytes, 1, f2)) {
-                std::cout << "at least one file pointer get the end!" << std::endl;
+            if (1 != fread(b1, frame_bytes, 1, f2)) {
+                std::cout << std::endl << "...at least one file pointer get the end!" << std::endl;
                 break; 
             } else {
                 psnr_log_f << "n:" << current_frame + 1
@@ -285,7 +290,7 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
         }
         
         if (1 != fread(b1, frame_bytes, 1, f1) || 1 != fread(b2, frame_bytes, 1, f2)) {
-            std::cout << "at least one file pointer get the end!" << std::endl;
+            std::cout << std::endl << "...at least one file pointer get the end!" << std::endl;
             break; 
         }
 
@@ -307,10 +312,12 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
                   << " psnr_v:"   << getPsnr(mse_v, 255)  
                   << std::endl;
 
+        /* 因为u,v分量的折损较小，所以不用可视化，如果需要，可以打开注释的代码.
         computeSsdImage(b1, b2, YUV420, width, height, 0, current_frame, writer_y);
         computeSsdImage(b1, b2, YUV420, width, height, 1, current_frame, writer_u);
-        computeSsdImage(b1, b2, YUV420, width, height, 2, current_frame, writer_v);  
-        computeBlockPsnrImage(b1, b2, YUV420, width, height, step, 0, current_frame, writer_y1);
+        computeSsdImage(b1, b2, YUV420, width, height, 2, current_frame, writer_v); 
+        */ 
+        computeBlockPsnrImage(b1, b2, YUV420, width, height, step, 0, current_frame, writer_y);
 
         std::cout << "\r\033[k"; // 清空命令行.      
     }

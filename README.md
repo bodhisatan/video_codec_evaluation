@@ -57,7 +57,7 @@ endif
 ## vpsnr
 与传统的psnr相比，vpsn有如下的优势：
 
-* vpsnr用于计算两个视频之间的psnr，并且对每帧视频的psnr进行空间维度的可视化展示，从而避免psnr的单一的平均结果无法描述视频中的不同区域的折损的情况。
+* vpsnr用于计算两个视频之间的psnr，并且对每帧视频的psnr进行时间、空间维度的可视化展示，从而避免psnr的单一的平均结果无法描述视频中的不同区域的折损的情况。
 * vpsnr还会考虑手机等移动设备在拍摄视频过程中存在的视频旋转的情况，vpsnr内部会自动对视频进行旋转处理。
 * vpsnr还增加了计算视频丢帧信息的功能，避免丢帧对psnr的结果带来的不准确性。如果需要开启丢帧检测，请使用`videoLabelProcess.sh`对视频t1.mp4增加标记生成t2.mp4，然后再对处理之后的视频进行各种转码操作并得到t3.mp4，然后利用vpsnr计算t2.mp4和t3.mpr的psnr。
 
@@ -80,6 +80,11 @@ vpsn对每帧视频的psnr的可视化结果如下所示：
 ![](imgs/vpsnr.gif)
 
 如图所示：psnr越大的区域，灰度值越高；psnr越小的区域，灰度值则越低。通过vpsnr的可视化之后，就能评估出视频的不同区域的psnr的范围。
+
+#### recog/video_figure_recog/psnr_graph.py
+时间维度的psnr可视化工具，使用该工具可以将vpsnr工具计算的每帧图像的psnr结果以时间维度进行可视化。具体效果如下：
+
+![](imgs/psnr.png)
 
 ## check_dropframe
 该命令用于检测旋转视频被处理之后的丢帧信息。

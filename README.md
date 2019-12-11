@@ -89,6 +89,17 @@ vpsn对每帧视频的psnr的可视化结果如下所示：
 
 ![](imgs/psnr.png)
 
+#### 丢帧视频的psnr对比
+利用psnr_graph.py工具分析丢帧对视频的psnr结果带来的干扰，具体如下图所示。
+
+**传统psnr算法的计算结果如下：**
+
+![](imgs/psnr2.png)
+
+**vpsnr算法的计算结果如下：**
+
+![](imgs/psnr3.png)
+
 ## check_dropframe
 该命令用于检测旋转视频被处理之后的丢帧信息。
 

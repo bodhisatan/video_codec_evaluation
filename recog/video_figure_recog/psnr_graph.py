@@ -8,8 +8,10 @@
 
 import matplotlib.pyplot as plt
 import os
+import sys
+from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
-def psnrFileAnalysis():
+def psnrFileAnalysis(psnrFilePath):
     """
     读取psnr文件，识别psnr&mse的值
     Args:
@@ -17,7 +19,7 @@ def psnrFileAnalysis():
     Returns:
         None
     """
-    psnrFilePath = '/Users/zhangyu57/Downloads/psnr.log'
+    # psnrFilePath = '/Users/zhangyu57/Downloads/psnr.log.1'
     if not os.path.exists(psnrFilePath):
         return
     pic_x_list = []
@@ -73,18 +75,36 @@ def psnr_graph(pic_x_list,psnr_avg_list,psnr_y_list,psnr_u_list,psnr_v_list):
     """
     # 创建绘图对象
     plt.figure(figsize=(10,8))
-    plt.plot(pic_x_list, psnr_avg_list, "r",linewidth=1,label='psnr_avg')
-    plt.plot(pic_x_list, psnr_y_list, "g",linewidth=1,label='psnr_y')
-    plt.plot(pic_x_list, psnr_u_list, "b",linewidth=1,label='psnr_u')
-    plt.plot(pic_x_list, psnr_v_list,color='black',linewidth=1,label='psnr_v')
+    
+    plt.plot(map(eval, pic_x_list),map(eval, psnr_avg_list), "r",linewidth=1,label='psnr_avg')
+    plt.plot(map(eval, pic_x_list),map(eval, psnr_y_list), "g",linewidth=1,label='psnr_y')
+    plt.plot(map(eval, pic_x_list),map(eval, psnr_u_list), "b",linewidth=1,label='psnr_u')
+    plt.plot(map(eval, pic_x_list),map(eval, psnr_v_list),color='black',linewidth=1,label='psnr_v')
 
+    
     plt.xlabel("Frame Number")
     plt.ylabel("Value")
     plt.title("psnr graph")
     plt.legend()
+
+    xmajorLocator = MultipleLocator(20)
+    ymajorLocator = MultipleLocator(10)
+    ax=plt.gca()
+    ax.xaxis.set_major_locator(xmajorLocator)
+    ax.yaxis.set_major_locator(ymajorLocator)
+    plt.ylim(0,55)
+  
+    
     plt.grid(True)
     # plt.show()
     plt.savefig('psnr.png')
+
+
+
+
+
+
+
 
 def mse_graph(pic_x_list,mse_avg_list,mse_y_list,mse_u_list,mse_v_list):
     """
@@ -96,22 +116,29 @@ def mse_graph(pic_x_list,mse_avg_list,mse_y_list,mse_u_list,mse_v_list):
     """
     # 创建绘图对象
     plt.figure(figsize=(10,8))
-    plt.plot(pic_x_list, mse_avg_list, "r",linewidth=1,label='mse_avg')
-    plt.plot(pic_x_list, mse_y_list, "g",linewidth=1,label='mse_y')
-    plt.plot(pic_x_list, mse_u_list, "b",linewidth=1,label='mse_u')
-    plt.plot(pic_x_list, mse_v_list,color='black',linewidth=1,label='mse_v')
+    plt.plot(map(eval, pic_x_list),map(eval, mse_avg_list), "r",linewidth=1,label='psnr_avg')
+    plt.plot(map(eval, pic_x_list),map(eval, mse_y_list), "g",linewidth=1,label='psnr_y')
+    plt.plot(map(eval, pic_x_list),map(eval, mse_u_list), "b",linewidth=1,label='psnr_u')
+    plt.plot(map(eval, pic_x_list),map(eval, mse_v_list),color='black',linewidth=1,label='psnr_v')
 
     plt.xlabel("Frame Number")
     plt.ylabel("Value")
     plt.title("mse graph")
     plt.legend()
+
+    xmajorLocator = MultipleLocator(20)
+    ymajorLocator = MultipleLocator(1)
+    ax=plt.gca()
+    ax.xaxis.set_major_locator(xmajorLocator)
+    ax.yaxis.set_major_locator(ymajorLocator)
+    plt.ylim(0,10)
     plt.grid(True)
     # plt.show()
-    plt.savefig('mse.png')
+    # plt.savefig('mse.png')
 
 
 if __name__ == '__main__':
-    res = psnrFileAnalysis()
+    res = psnrFileAnalysis(sys.argv[1])
     psnr_graph(res[0],res[1],res[2],res[3],res[4])
     mse_graph(res[0], res[5], res[6], res[7], res[8])
 

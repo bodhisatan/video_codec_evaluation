@@ -18,10 +18,10 @@
 
 在编译过程中，可能会出现**无法找到xxx.pc**的提示，此时，按照提示，将对应依赖的pkg-config配置文件路径增加到`PKG_CONFIG_PATH`环境变量即可。
 
-项目默认关闭debug选项，也就是很多中间结果信息没有打印出来，如果希望开启debug选项，在make时增加`DEBUG=1`(注意：DEBUG需为大写)。具体方法为：
+项目默认关闭debug选项，也就是很多中间结果信息没有打印出来，如果希望开启debug选项，在make时增加`DEBUG=1`。具体方法为：
 
 ```shell
-make DEBUG=1 #
+make DEBUG=1 #注意：DEBUG需为大写
 ```
 
 ## videoLabelProcess.sh

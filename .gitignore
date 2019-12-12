@@ -32,6 +32,9 @@
 *.out
 *.app
 
+# Compilation output
+vpsnr
+
 appInfo.sh
 ocr.py
 data/*

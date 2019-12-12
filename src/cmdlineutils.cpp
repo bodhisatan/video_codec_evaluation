@@ -18,6 +18,7 @@ cmdline::parser vpsnrCmdLine(int argc, char *argv[]) {
 	cmdPara.add<std::string>("mainVideo", 'm', "含有噪声的视频", true, "");
 	cmdPara.add<int>("blockSize", 'b', "计算分块psnr的块大小", false, 1);
 	cmdPara.add<bool>("dropFrameDetect", 'd', "是否执行丢帧检测", false, false);
+	cmdPara.add<std::string>("dropFrameInfoFile", 'f', "手动指定丢帧信息文件", false, "");
 
 	return cmdPara;
 }
@@ -47,17 +48,9 @@ bool isFileExist(const std::string &file) {
 cmdline::parser checkDropFrameCmdLine(int argc, char *argv[]) {
 	cmdline::parser cmdPara;
 
-	cmdPara.add<std::string>("input",   'i', 
-		                     "the video after codec operator that needed to process", true, "");
-	cmdPara.add<int>("originWidth",     'w', 
-		             "the origin video width before codec operator",  true, 0);
-	cmdPara.add<int>("originHeight",    'h', 
-		             "the origin video height before codec operator", true, 0);
-	cmdPara.add<int>("originVideoType", 't', 
-		             "the origin video source type, 1: front, 2: back, or 3: normal",  true, 2);
-	cmdPara.add<std::string>("dir", 'd', 
-		                     "the path that the frame number area extract from the video", 
-		                     false, "psnr/data");
+	cmdPara.add<std::string>("mainVideo", 'm', "待检测丢帧的视频",  true, "");
+	cmdPara.add<std::string>("refVideo",   'r', "原视频", true, "");
+	
 
 	return cmdPara;
 }

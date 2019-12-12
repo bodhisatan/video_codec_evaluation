@@ -152,4 +152,10 @@ void Rotate90(const AVFrame* src, AVFrame* dst);
  */
 void Rotate270(const AVFrame* src, AVFrame* dst);
 
+/**
+ * 从文件中读取丢帧信息，然后转乘向量.
+ * @param dpi: 丢帧信息文件.
+ * @param v: 存储丢帧信息.
+ */
+void getDPIFromFile(const std::string &dpi, std::vector<int> &v);
 #endif // PSNR_H_

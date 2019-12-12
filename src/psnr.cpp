@@ -577,3 +577,24 @@ void Rotate270(const AVFrame* src, AVFrame* dst) {
     dst->width  = src->height;
     dst->height = src->width;
 }
+
+void getDPIFromFile(const std::string &dpi, std::vector<int> &v) {
+    std::ifstream in(dpi);  
+    if(!in) {
+        std::cout <<"no such file" << std::endl;  
+    }
+
+    char c;
+    v.clear();
+    while (in.get(c)) {
+        if (c == ' ' || c == '\n') {
+            continue;
+        }  
+
+        try {
+            v.emplace_back(boost::lexical_cast<int>(c));
+        } catch(...) {}  
+    }
+
+    in.close();  
+}

@@ -45,7 +45,7 @@ ifndef SRCDIR
     SRCDIR=src
 endif
 
-DST=get_frame_seq check_dropframe vpsnr
+DST=get_frame_seq checkdropframe vpsnr
 TEST=test_httprequest test_matrixutils test_psnr
 
 all: $(DST) $(TEST)
@@ -67,7 +67,7 @@ get_frame_seq: $(SRCDIR)/get_frame_seq.o $(LIBOBJ)
 vpsnr: $(SRCDIR)/vpsnr.o $(LIBOBJ) 
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
 
-check_dropframe: $(SRCDIR)/check_dropframe.o $(LIBOBJ)
+checkdropframe: $(SRCDIR)/check_dropframe.o $(LIBOBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
 
 test_httprequest: $(SRCDIR)/test/test_httprequest.o $(LIBOBJ)

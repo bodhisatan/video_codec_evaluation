@@ -1,4 +1,8 @@
 # set the complier.
+
+# configuration
+DEBUG ?= 0     # 0: -DNDEBUG   1:-DDEBUG
+
 ifndef CXX
     CXX=g++ 
 endif
@@ -9,7 +13,13 @@ endif
 
 # set the compiler's flags.
 ifndef CXXFLAGS
-    CXXFLAGS=-O2 -DNDEBUG -Wall -Wno-sign-compare -g
+    CXXFLAGS=-O2 -Wall -Wno-sign-compare -g
+endif
+
+ifeq ($(DEBUG), 1)
+    override CXXFLAGS += -DDEBUG
+else
+    override CXXFLAGS += -DNDEBUG
 endif
 
 ifeq (g++, $(findstring g++,$(CXX)))

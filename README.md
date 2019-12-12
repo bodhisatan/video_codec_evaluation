@@ -23,6 +23,18 @@
 ```shell
 make DEBUG=1 #注意：DEBUG需为大写
 ```
+清除编译产出：
+```shell
+make clean
+```
+清除编译产出，并开启DEBUG进行编译：
+```shell
+make clean && make DEBUG=1
+```
+开启多核：
+```shell
+make -j4
+```
 
 ## videoLabelProcess.sh
 在视频的指定区域给视频增加帧号信息。

@@ -362,7 +362,10 @@ bool mp42yuv(const std::string &mp4, std::string &yuv) {
 
     std::string resDir = conf["psnr"]["resDir"].as<std::string>();
     if (!isDirExist(resDir)) {
-        mkdir(resDir.c_str(), S_IRWXU);
+        if (mkdir(resDir.c_str(), S_IRWXU) != 0 ) {
+            std::cout << "create  " << resDir  << " failed..." << std::endl;
+            return false;
+        }
     }
 
     std::string file_name = mp4.substr(mp4.find_last_of('/') + 1);

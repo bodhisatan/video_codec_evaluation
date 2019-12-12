@@ -34,6 +34,7 @@
 
 # Compilation output
 vpsnr
+checkdropframe
 
 appInfo.sh
 ocr.py

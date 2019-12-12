@@ -89,10 +89,12 @@ test_matrixutils: $(SRCDIR)/test/test_matrixutils.o $(LIBOBJ)
 test_psnr: $(SRCDIR)/test/test_psnr.o $(LIBOBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
 
+.PHONY : clean
 # clean
 clean:
 	rm -f $(SRCDIR)/*.o $(DST) $(TEST) $(SRCDIR)/test/*.o
 
+.PHONY : clean_data
 clean_data:
 	rm -f data/* psnr/data/*
 

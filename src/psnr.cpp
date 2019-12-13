@@ -159,6 +159,76 @@ void computeBlockPsnrImage(const unsigned char *main_data, const unsigned char *
     writer.write(greyFrame);
 }
 
+bool temproralVisualize(const std::string &psnrlog) {
+	Py_Initialize();    //初始化
+
+    #ifndef DEBUG
+    std::cout << "为了vpsnr能够正确生成时间维度的分析图，请检查vpsnr和python在同级目录下." << std::endl;
+    #endif
+
+	std::string path    = "python";
+	std::string cmd_dir = std::string("sys.path.append(\"" + path + "\")");
+	
+	std::string psnrlog_dir = psnrlog.substr(0, psnrlog.find_last_of('/'));
+
+    PyRun_SimpleString("import sys");
+    PyRun_SimpleString("import os");
+    PyRun_SimpleString(cmd_dir.c_str());
+
+    // 加载模块
+    PyObject* moduleName = PyUnicode_FromString("psnr_graph-Py3");
+    PyObject* pModule = PyImport_Import(moduleName);
+    if (!pModule) {
+        std::cout << "Python get module [psnr_graph-Py3] failed." << std::endl;
+        return false;
+    }
+
+    #ifdef DEBUG
+    std::cout << "Python get module [psnr_graph-Py3] succeed." <<std::endl;
+    #endif
+
+    // 加载函数
+    PyObject* pv = PyObject_GetAttrString(pModule, "get_psnr_graph");
+    if (!pv || !PyCallable_Check(pv)) {
+        std::cout << "Can't find funftion [get_psnr_graph]" << std::endl;
+        return false;
+    }
+
+    #ifdef DEBUG
+    std::cout << "Python get function [get_psnr_graph] succeed." << std::endl;
+    #endif 
+
+    // 设置参数
+    PyObject* args = PyTuple_New(2); 
+    PyObject* arg1 = Py_BuildValue("s", psnrlog.c_str());    
+    PyObject* arg2 = Py_BuildValue("s", psnrlog_dir.c_str());
+    PyTuple_SetItem(args, 0, arg1);
+    PyTuple_SetItem(args, 1, arg2);
+
+    #ifdef DEBUG    
+    std::cout << "第一个参数：" << psnrlog << std::endl;
+    std::cout << "第二个参数：" << psnrlog_dir << std::endl;
+    #endif
+
+    // 调用函数
+    PyObject* pRet = PyObject_CallObject(pv, args);
+    if (pRet) {
+    	#ifdef DEBUG
+        long result = PyLong_AsLong(pRet);
+        std::cout << "result:" << result << std::endl;
+        #endif
+
+        std::cout << "...时间维度可视化执行成功" << std::endl;
+        #ifdef DEBUG
+        std::cout << "..." << psnrlog << "<===>" << psnrlog_dir << "/psnr.png" << std::endl; 
+        #endif 
+    }
+
+    Py_Finalize();      //释放资源
+
+    return true;
+}
+
 bool psnrAndVisualize(const std::string &main_video, const std::string &ref_video,
                       const EPixFormat format, const int frame_count,
                       const int width, const int height,  
@@ -243,7 +313,7 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
                                                cv::Size(width >> 1, height >> 1), 
                                                false);
     */
-    cv::VideoWriter writer_y = cv::VideoWriter(resDir + "/y.avi", 
+    cv::VideoWriter writer_y = cv::VideoWriter(resDir + "/psnr_y.avi", 
                                                cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 
                                                30, 
                                                cv::Size(width / step, height / step), 
@@ -349,6 +419,9 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
     free(b1);
     free(b2);
     psnr_log_f.close();
+
+    // 时间维度的可视化
+    temproralVisualize(psnr_log);
 
     return true;
 } 

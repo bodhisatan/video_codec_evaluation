@@ -65,7 +65,7 @@ def psnrFileAnalysis(psnrFilePath):
         return pic_x_list ,psnr_avg_list,psnr_y_list,psnr_u_list,psnr_v_list,mse_avg_list,mse_y_list,mse_u_list,mse_v_list
 
 
-def psnr_graph(pic_x_list,psnr_avg_list,psnr_y_list,psnr_u_list,psnr_v_list,png_name):
+def psnr_graph(res, dir):
     """
     每一帧图片及yuv每个通道的psnr值可视化图
     Args:
@@ -73,6 +73,13 @@ def psnr_graph(pic_x_list,psnr_avg_list,psnr_y_list,psnr_u_list,psnr_v_list,png_
     Returns:
         None
     """
+
+    pic_x_list    = res[0]
+    psnr_avg_list = res[1]
+    psnr_y_list   = res[2]
+    psnr_u_list   = res[3]
+    psnr_v_list   = res[4]
+
     # 创建绘图对象
     plt.figure(figsize=(10,8))
     
@@ -97,14 +104,7 @@ def psnr_graph(pic_x_list,psnr_avg_list,psnr_y_list,psnr_u_list,psnr_v_list,png_
     
     plt.grid(True)
     # plt.show()
-    plt.savefig('psnr.png')
-
-
-
-
-
-
-
+    plt.savefig(dir + '/psnr.png')
 
 def mse_graph(pic_x_list,mse_avg_list,mse_y_list,mse_u_list,mse_v_list,png_name):
     """
@@ -136,9 +136,11 @@ def mse_graph(pic_x_list,mse_avg_list,mse_y_list,mse_u_list,mse_v_list,png_name)
     # plt.show()
     # plt.savefig('mse.png')
 
+def get_psnr_graph(psnrlog, psnrdir):
+    res = psnrFileAnalysis(psnrlog)
+    psnr_graph(res, psnrdir)
 
 if __name__ == '__main__':
-    res = psnrFileAnalysis(sys.argv[1])
-    psnr_graph(res[0],res[1],res[2],res[3],res[4],sys.argv[1])
-    mse_graph(res[0], res[5], res[6], res[7], res[8],sys.argv[1])
+    get_psnr_graph(sys.argv[1], sys.argv[2])
+    #mse_graph(res[0], res[5], res[6], res[7], res[8],sys.argv[1])
 

@@ -8,7 +8,7 @@ ifndef CXX
 endif
  
 ifeq (c++, $(findstring c++,$(CXX)))
-	CXX=g++
+    CXX=g++
 endif
 
 # set the compiler's flags.
@@ -80,6 +80,7 @@ vpsnr: $(SRCDIR)/vpsnr.o $(LIBOBJ)
 checkdropframe: $(SRCDIR)/check_dropframe.o $(LIBOBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
 
+# compile for test
 test_httprequest: $(SRCDIR)/test/test_httprequest.o $(LIBOBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
 
@@ -123,6 +124,7 @@ $(SRCDIR)/psnr.o:
 $(SRCDIR)/vpsnr.o: 
 	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/vpsnr.o $(SRCDIR)/vpsnr.cpp $(INCLUDES)
 
+# compile for test
 $(SRCDIR)/test/test_httprequest.o: 
 	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/test/test_httprequest.o $(SRCDIR)/test/test_httprequest.cpp $(INCLUDES)
 

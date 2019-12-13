@@ -51,15 +51,23 @@ def psnrFileAnalysis(psnrFilePath):
             mse_v_list.append(mse_v)
 
             psnr_avg = line.split('psnr_avg:')[1].split(' ')[0]
+            if psnr_avg.strip() == 'inf':
+                psnr_avg = '60'
             psnr_avg_list.append(psnr_avg)
 
             psnr_y = line.split('psnr_y:')[1].split(' ')[0]
+            if psnr_y.strip() == 'inf':
+                psnr_y = '60'
             psnr_y_list.append(psnr_y)
 
             psnr_u = line.split('psnr_u:')[1].split(' ')[0]
+            if psnr_u.strip() == 'inf':
+                psnr_u = '60'
             psnr_u_list.append(psnr_u)
 
             psnr_v = line.split('psnr_v:')[1].split(' ')[0]
+            if psnr_v.strip() == 'inf':
+                psnr_v = '60'
             psnr_v_list.append(psnr_v)
 
         return pic_x_list ,psnr_avg_list,psnr_y_list,psnr_u_list,psnr_v_list,mse_avg_list,mse_y_list,mse_u_list,mse_v_list
@@ -90,8 +98,8 @@ def psnr_graph(res, dir):
 
     
     plt.xlabel("Frame Number")
-    plt.ylabel("Value")
-    plt.title("psnr graph")
+    plt.ylabel("Psnr Value")
+    plt.title("Psnr Temporal Graph")
     plt.legend()
 
     xmajorLocator = MultipleLocator(20)
@@ -99,7 +107,7 @@ def psnr_graph(res, dir):
     ax=plt.gca()
     ax.xaxis.set_major_locator(xmajorLocator)
     ax.yaxis.set_major_locator(ymajorLocator)
-    plt.ylim(0,55)
+    plt.ylim(0,65)
   
     
     plt.grid(True)

@@ -55,10 +55,17 @@ int main(int argc, char *argv[]) {
 
     // 获取分辨率信息和帧数信息
     cv::Size r1 = GetVideoResolution(f1, t);
-    
+    cv::Size r2 = GetVideoResolution(f2);
+
     #ifdef DEBUG
-    std::cout << "原视频的分辨率为: " << r1.width << " x " << r1.height << std::endl;
+    std::cout << "原视频的分辨率为: " << r1.width << "x" << r1.height << std::endl;
+    std::cout << "噪声视频分辨率为: " << r2.width << "x" << r2.height << std::endl; 
     #endif
+
+    if (r1.width != r2.width || r1.height != r2.height) {
+        std::cout << "mainVideo 和 refVideo的分辨率不一致，请检查视频分辨率" << std::endl;
+        return -1;
+    }
 
     int oriWidth     = r1.width;
 	int oriHeight    = r1.height;

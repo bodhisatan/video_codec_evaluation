@@ -34,27 +34,35 @@ double computeImagesMse(const unsigned char *main_data, const unsigned char *ref
     return mse / (double) (deno);
 }
 
-uchar ssdNormal(int ssd, int min_ssd, int max_ssd, int level, int normal) {
-    int oriInterval = (max_ssd - min_ssd + 1) / (int)level;
-    int normalInterval = (normal + 1) / (int)level;
+int valueNormal(int val, int min_val, int max_val, int level, int normal) {
+    int oriInterval    = (max_val - min_val) / level;
+    int normalInterval = (normal + 1) / level;
 
     std::vector<int> oriList;
     std::vector<int> normalList;
 
+    oriList.clear();
+    normalList.clear();
+
     for (int i = 0; i <= level; ++i) {
-        oriList.emplace_back(min_ssd + oriInterval * i);
+        oriList.emplace_back(min_val + oriInterval * i);
         normalList.emplace_back(normalInterval * i);
     }
     
     int res = 0;
-    for (int i = 1; i <= level; ++i) {
-        if (ssd <= oriList[i]) {
-            res = normalList[i - 1];
-            break;
-        } 
+
+    if (val >= oriList[level]) {
+        res = normalList[level] - 1;
+    } else {
+        for (int i = 1; i <= level; ++i) {
+            if (val < oriList[i]) {
+                res = normalList[i - 1] - 1;
+                break;
+            } 
+        }
     }
 
-    return (uchar)res;
+    return res;
 }
 
 void computeSsdImage(const unsigned char *main_data, const unsigned char *ref_data, 
@@ -97,7 +105,7 @@ void computeSsdImage(const unsigned char *main_data, const unsigned char *ref_da
 
     for (int i = begin; i < end; ++i) {
         ssd = pow2((int)main_data[i] - (int)ref_data[i]);
-        uchar ssd_nor = ssdNormal(ssd, min_ssd, max_ssd, 8, 255);
+        uchar ssd_nor = (uchar)valueNormal(ssd, min_ssd, max_ssd, 8, 255);
         int j = i - begin;
         greyFrame.at<uchar>((int)(j / w1), (int)(j % w1)) = ssd_nor;
     }
@@ -146,14 +154,9 @@ void computeBlockPsnrImage(const unsigned char *main_data, const unsigned char *
             mse = ssd / (double)(pow2(step));
             psnr = (int)getPsnr(mse, 255);
         }
-        
-        // std::cout << psnr << " ";
-        // if (min_psnr > psnr) {min_psnr = psnr;}
-        // if (max_psnr < psnr) {max_psnr = psnr;}
-        psnr *= 1;
         if (psnr > 60) {psnr = 60;}
 
-        greyFrame.at<uchar>((int)(i / w_t), (int)(i % w_t)) = (uchar)(psnr);
+        greyFrame.at<uchar>((int)(i / w_t), (int)(i % w_t)) = (uchar)valueNormal(psnr, 0, 60, 8, 255);
     }
 
     writer.write(greyFrame);
@@ -162,8 +165,8 @@ void computeBlockPsnrImage(const unsigned char *main_data, const unsigned char *
 bool temproralVisualize(const std::string &psnrlog) {
 	Py_Initialize();    //初始化
 
-    #ifndef DEBUG
-    std::cout << "为了vpsnr能够正确生成时间维度的分析图，请检查vpsnr和python在同级目录下." << std::endl;
+    #ifdef DEBUG
+    std::cout << "......为了vpsnr能够正确生成时间维度的分析图，请检查vpsnr和python在同级目录下." << std::endl;
     #endif
 
 	std::string path    = "python";
@@ -410,7 +413,7 @@ bool psnrAndVisualize(const std::string &main_video, const std::string &ref_vide
         */ 
         computeBlockPsnrImage(b1, b2, YUV420, width, height, step, 0, current_frame, writer_y);
 
-        std::cout << "\r\033[k"; // 清空命令行.      
+        std::cout << "\r\033[k"; // 清空命令行.    
     }
 
     // 关闭资源

@@ -66,7 +66,7 @@ vpsnr执行完毕后，会在conf/psnr.yaml:resDir配置的目录下生成3个�
 
 * psnr.log: 视频每帧的psnr结果.
 * psnr.png: 对psnr.log的时间维度可视化.
-* psnr_y.avi: 对psnr.log的空间维度的可视化.
+* psnr_y.avi: 对psnr.log的y分量的空间维度的可视化.
 
 vpsn对每帧视频的psnr的可视化结果如下所示：
 

@@ -108,11 +108,11 @@ void computeBlockPsnrImage(const unsigned char *main_data,
                            cv::VideoWriter &writer);
 
 /**
- * 归一化mse. 
- * 将[min_mse, max_min]区间内的mse归一化到[0, normal]的level级别区间中。
+ * 归一化value. 
+ * 将[min_val, max_val]区间内的val归一化到[0, normal]的level级别区间中。
  * 例如将[0, 10]中的5归一化到[0, 100]的5级区间中，则1=>20， 2=>20，3=>40...
  */
-uchar mseNormal(int mse, int min_mse, int max_mse, int level, int normal);
+int valueNormal(int val, int min_val, int max_val, int level, int normal);
 
 /**
  * 对psnrlog进行时间维度的可视化分析.

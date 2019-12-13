@@ -114,7 +114,7 @@ EVideoType getRotateAngle(const std::string &mp4) {
 
     //3. 打开视频
     if (avformat_open_input(&pContext, mp4.c_str(), NULL, NULL) < 0) {
-        std::cout << "open failed." << std::endl;
+        std::cout << "open " << mp4 << " failed." << std::endl;
         return CAMERA_ERROR;
     }
 

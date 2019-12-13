@@ -44,6 +44,11 @@ int main(int argc, char *argv[]) {
     // 获取原视频旋转角度
     EVideoType t   = getRotateAngle(f1);
 
+    if (CAMERA_ERROR == t){
+        std::cout << "获取原视频旋转角度失败..." << std::endl;
+        return -1;
+    }
+
     #ifdef DEBUG
     std::cout << "原视频的EVideoType为: " << t << std::endl;
     #endif

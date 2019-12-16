@@ -1,6 +1,8 @@
 include third_party/Makefile
 include libs/Makefile
 
+TEST=test_httprequest test_matrixutils test_psnr
+
 other-all:
 	@echo "other makefile begin"
 	@echo $(LIBS)

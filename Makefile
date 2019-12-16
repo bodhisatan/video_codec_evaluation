@@ -49,7 +49,6 @@ ifndef PRJDIR
 endif
 
 DST=get_frame_seq checkdropframe vpsnr
-TEST=test_httprequest test_matrixutils test_psnr
 
 all: $(DST) $(TEST)
 

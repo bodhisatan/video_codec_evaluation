@@ -4,6 +4,12 @@ ifndef DSTMAKEFILE
 include third_party/Makefile
 include libs/Makefile
 
+# 顶层调用的入口
+dst-all-sub: $(DSTSUB)
+
+# 底层增加，删除后请在此修改，顶层不用修改
+DSTSUB=get_frame_seq vpsnr checkdropframe
+
 get_frame_seq: $(SRCDIR)/get_frame_seq.o $(LIBOBJ) 
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
 

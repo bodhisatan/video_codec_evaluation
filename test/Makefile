@@ -4,10 +4,13 @@ ifndef TESTMAKEFILE
 include third_party/Makefile
 include libs/Makefile
 
-# 解耦合用，顶层make all未使用，可单独使用 make test-all
+# 顶层调用的入口
+test-all-sub: $(TESTSUB)
+
+# 底层增加，删除后请在此修改，顶层不用修改
 TESTSUB=test_matrixutils test_psnr test_httprequest
 
-test-all-sub: $(TESTSUB)
+tpsnr: test_psnr
 
 test_matrixutils: $(PRJDIR)/test/test_matrixutils.o $(LIBOBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)

@@ -62,6 +62,9 @@ options:
 
 $ vpsnr -r videoDB/t12.mp4 -m videoDB/t13.mp4 -b 4
 ```
+
+vpsnr对于mainVideo而言不支持旋转，也就是说mainVideo的视频必须为物旋转视频，其rotate属性必须为0。
+
 vpsnr执行完毕后，会在conf/psnr.yaml:resDir配置的目录下生成3个结果文件：
 
 * psnr.log: 视频每帧的psnr结果.

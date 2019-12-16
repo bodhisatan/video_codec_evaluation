@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
 	// 解析配置文件.
     YAML::Node conf = initPsnrConf();
     if (!conf["psnr"] || !conf["psnr"]["ocrSrcDir"] || !conf["psnr"]["resDir"]) {
-        std::cout << "解析psnr.yaml文件失败!" << std::endl;
+        std::cout << "解析psnr.yaml文件失败,请检查conf/psnr.ymal文件！" << std::endl;
         return 0;
     }
     std::string ocrSrcDir = conf["psnr"]["ocrSrcDir"].as<std::string>();

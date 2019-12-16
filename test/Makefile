@@ -1,7 +1,8 @@
+# TESTMAKEFILE
+ifndef TESTMAKEFILE
+
 include third_party/Makefile
 include libs/Makefile
-
-TEST=test_httprequest test_matrixutils test_psnr
 
 other-all:
 	@echo "other makefile begin"
@@ -28,3 +29,5 @@ $(PRJDIR)/test/test_matrixutils.o:
 
 $(PRJDIR)/test/test_psnr.o: 
 	$(CXX) $(CXXFLAGS) -c -o $(PRJDIR)/test/test_psnr.o $(PRJDIR)/test/test_psnr.cpp $(INCLUDES)
+
+endif

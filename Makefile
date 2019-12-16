@@ -1,3 +1,8 @@
+# include the third-party requirements
+include third_party/Makefile
+# 项目封装的libs需要在libs/Makefile中注册，以供全局使用
+include libs/Makefile
+
 # configuration
 DEBUG ?= 0     # 0: -DNDEBUG   1:-DDEBUG
 
@@ -31,9 +36,6 @@ else ifeq ($(CXX), c++)
     endif
 endif
 
-# include the third-party requirements
-include third_party/Makefile
-
 # set the PREFIEX
 ifndef PREFIX
     PREFIX=.
@@ -47,17 +49,17 @@ ifndef PRJDIR
     PRJDIR=.
 endif
 
+# 命令定义在子一级，调度在顶层，如TEST的test_httprequest定义在test/Makefile，调度在此
+# todo: 逐渐将顶层Makefile具体编译逻辑抽出，只做聚合与调度
 DST=get_frame_seq checkdropframe vpsnr
 TEST=test_httprequest test_matrixutils test_psnr
 
 all: $(DST) $(TEST)
 
 # include的子一级makefile 放在default的 all之后
-# 测试的makefile
-include test/Makefile
-
+include test/Makefile # 测试的makefile
 test: $(TEST)
-
+# 测试的makefile
 tpsnr: test_psnr
 
 # 测试makefile拆分使用，验证后删除
@@ -67,9 +69,6 @@ makefile_div_debug:
 	@echo "${FLAG}"
 	make other-all
 	@echo "main makefile end"
-
-# 本项目封装的libs需要在libs/Makefile中注册，以供全局使用
-include libs/Makefile
 
 get_frame_seq: $(SRCDIR)/get_frame_seq.o $(LIBOBJ) 
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)

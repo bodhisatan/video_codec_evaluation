@@ -17,9 +17,9 @@
 #include <opencv2/opencv.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include "../frame_drop_detect.h"
-#include "../psnr.h"
-#include "../matrixutils.h"
+#include "../src/frame_drop_detect.h"
+#include "../src/psnr.h"
+#include "../src/matrixutils.h"
 
 int main(int argc, char *argv[]) {
     std::string f1 = "videoDB/t12.mp4";

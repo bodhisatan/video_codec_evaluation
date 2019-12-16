@@ -5,10 +5,10 @@
 #include <unistd.h>
 #include <stdio.h>
 
-#include "../ocr.h"
-#include "../cmdlineutils.h"
-#include "../matrixutils.h"
-#include "../frame_drop_detect.h"
+#include "../src/ocr.h"
+#include "../src/cmdlineutils.h"
+#include "../src/matrixutils.h"
+#include "../src/frame_drop_detect.h"
 
 int main(int argc, char *argv[]) {
     std::string file1= "videoDB/t42.mp4";

@@ -1,8 +1,7 @@
-# set the complier.
-
 # configuration
 DEBUG ?= 0     # 0: -DNDEBUG   1:-DDEBUG
 
+# set the complier.
 ifndef CXX
     CXX=g++ 
 endif
@@ -32,19 +31,9 @@ else ifeq ($(CXX), c++)
     endif
 endif
 
-# set the third-party requirements
-ifdef LIBS
-    LIBS += $(shell pkg-config --libs opencv yaml-cpp libavcodec libavformat libavdevice libavutil python3)
-else
-    LIBS=$(shell pkg-config --libs opencv yaml-cpp libavcodec libavformat libavdevice libavutil python3)
-endif
-
-# set the third-party requirements
-ifdef INCLUDES
-    INCLUDES += $(shell pkg-config --cflags opencv yaml-cpp libavcodec libavformat libavdevice libavutil python3)
-else
-    INCLUDES=$(shell pkg-config --cflags opencv yaml-cpp libavcodec libavformat libavdevice libavutil python3)
-endif
+# 第三方库
+# include the third-party requirements
+include third_party/Makefile
 
 # set the PREFIEX
 ifndef PREFIX
@@ -55,21 +44,33 @@ ifndef SRCDIR
     SRCDIR=src
 endif
 
+ifndef PRJDIR
+    PRJDIR=.
+endif
+
 DST=get_frame_seq checkdropframe vpsnr
 TEST=test_httprequest test_matrixutils test_psnr
 
 all: $(DST) $(TEST)
 
+# include的子一级makefile 放在default的 all之后
+# 测试的makefile
+include test/Makefile
+
 test: $(TEST)
 
 tpsnr: test_psnr
 
-LIBOBJ = $(SRCDIR)/cmdlineutils.o \
-         $(SRCDIR)/matrixutils.o \
-         $(SRCDIR)/conf.o \
-         $(SRCDIR)/ocr.o \
-         $(SRCDIR)/frame_drop_detect.o \
-		 $(SRCDIR)/psnr.o
+# 测试makefile拆分使用，验证后删除
+# todo: delete makefile_div_debug
+makefile_div_debug:
+	@echo "main makefile begin"
+	@echo "${FLAG}"
+	make other-all
+	@echo "main makefile end"
+
+# 本项目封装的libs需要在libs/Makefile中注册，以供全局使用
+include libs/Makefile
 
 get_frame_seq: $(SRCDIR)/get_frame_seq.o $(LIBOBJ) 
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
@@ -79,25 +80,6 @@ vpsnr: $(SRCDIR)/vpsnr.o $(LIBOBJ)
 
 checkdropframe: $(SRCDIR)/check_dropframe.o $(LIBOBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
-
-# compile for test
-test_httprequest: $(SRCDIR)/test/test_httprequest.o $(LIBOBJ)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
-
-test_matrixutils: $(SRCDIR)/test/test_matrixutils.o $(LIBOBJ)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
-
-test_psnr: $(SRCDIR)/test/test_psnr.o $(LIBOBJ)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
-
-.PHONY : clean
-# clean
-clean:
-	rm -f $(SRCDIR)/*.o $(DST) $(TEST) $(SRCDIR)/test/*.o
-
-.PHONY : clean_data
-clean_data:
-	rm -f data/* psnr/data/*
 
 # build.
 $(SRCDIR)/get_frame_seq.o: 
@@ -124,13 +106,11 @@ $(SRCDIR)/psnr.o:
 $(SRCDIR)/vpsnr.o: 
 	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/vpsnr.o $(SRCDIR)/vpsnr.cpp $(INCLUDES)
 
-# compile for test
-$(SRCDIR)/test/test_httprequest.o: 
-	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/test/test_httprequest.o $(SRCDIR)/test/test_httprequest.cpp $(INCLUDES)
+.PHONY : clean
+# clean
+clean:
+	rm -f $(SRCDIR)/*.o $(DST) $(TEST) $(PRJDIR)/test/*.o
 
-$(SRCDIR)/test/test_matrixutils.o: 
-	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/test/test_matrixutils.o $(SRCDIR)/test/test_matrixutils.cpp $(INCLUDES)
-
-$(SRCDIR)/test/test_psnr.o: 
-	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/test/test_psnr.o $(SRCDIR)/test/test_psnr.cpp $(INCLUDES)
-
+.PHONY : clean_data
+clean_data:
+	rm -f data/* psnr/data/*

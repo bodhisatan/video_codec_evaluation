@@ -69,8 +69,8 @@ dst-all:
 
 .PHONY : clean
 clean:
-	rm -f $(SRCDIR)/*.o $(TESTDIR)/*.o $(DSTSUB) $(TESTSUB)
+	-rm -f $(SRCDIR)/*.o $(TESTDIR)/*.o $(DSTSUB) $(TESTSUB)
 
 .PHONY : clean_data
 clean_data:
-	rm -f data/* psnr/data/*
+	-rm -f data/* psnr/data/*

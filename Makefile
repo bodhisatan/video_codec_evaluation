@@ -31,7 +31,6 @@ else ifeq ($(CXX), c++)
     endif
 endif
 
-# 第三方库
 # include the third-party requirements
 include third_party/Makefile
 
@@ -49,6 +48,7 @@ ifndef PRJDIR
 endif
 
 DST=get_frame_seq checkdropframe vpsnr
+TEST=test_httprequest test_matrixutils test_psnr
 
 all: $(DST) $(TEST)
 

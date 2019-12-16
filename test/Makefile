@@ -4,11 +4,11 @@ ifndef TESTMAKEFILE
 include third_party/Makefile
 include libs/Makefile
 
-# 顶层调用的入口
-test-all-sub: $(TESTSUB)
-
 # 底层增加，删除后请在此修改，顶层不用修改
 TESTSUB=test_matrixutils test_psnr test_httprequest
+
+# 顶层调用的入口
+test-all-sub: $(TESTSUB)
 
 tpsnr: test_psnr
 

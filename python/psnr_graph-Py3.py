@@ -102,7 +102,8 @@ def psnr_graph(res, dir):
     plt.title("Psnr Temporal Graph")
     plt.legend()
 
-    xmajorLocator = MultipleLocator(20)
+    xmajorLocator = MultipleLocator(int(int(len(pic_x_list) / 10) / 10) * 10)
+    
     ymajorLocator = MultipleLocator(10)
     ax=plt.gca()
     ax.xaxis.set_major_locator(xmajorLocator)

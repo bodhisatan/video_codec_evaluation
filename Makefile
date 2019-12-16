@@ -49,60 +49,21 @@ ifndef PRJDIR
     PRJDIR=.
 endif
 
-# 命令定义在子一级，调度在顶层，如TEST的test_httprequest定义在test/Makefile，调度在此
-# todo: 逐渐将顶层Makefile具体编译逻辑抽出，只做聚合与调度
+# 命令定义在子一级，调度在顶层，如TEST的test_httprequest定义在test/Makefile，调度在此(顶层和子一级的Makefile解耦合)
 DST=get_frame_seq checkdropframe vpsnr
-TEST=test_httprequest test_matrixutils test_psnr
+TEST=test_httprequest test_matrixutils test_psnr  # 解耦合方式
+# TEST=test-all                                   # 耦合的方式，暂时不用这种
 
+# 逐渐将顶层Makefile具体编译逻辑抽出，只做聚合与调度
 all: $(DST) $(TEST)
 
-# include的子一级makefile 放在default的 all之后
-include test/Makefile # 测试的makefile
+include test/Makefile # 测试的makefile，至少在all之后
 test: $(TEST)
-# 测试的makefile
+test-all:
+	make test-all-sub
 tpsnr: test_psnr
 
-# 测试makefile拆分使用，验证后删除
-# todo: delete makefile_div_debug
-makefile_div_debug:
-	@echo "main makefile begin"
-	@echo "${FLAG}"
-	make other-all
-	@echo "main makefile end"
-
-get_frame_seq: $(SRCDIR)/get_frame_seq.o $(LIBOBJ) 
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
-
-vpsnr: $(SRCDIR)/vpsnr.o $(LIBOBJ) 
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
-
-checkdropframe: $(SRCDIR)/check_dropframe.o $(LIBOBJ)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)
-
-# build.
-$(SRCDIR)/get_frame_seq.o: 
-	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/get_frame_seq.o $(SRCDIR)/get_frame_seq.cpp $(INCLUDES)
-
-$(SRCDIR)/check_dropframe.o: 
-	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/check_dropframe.o $(SRCDIR)/check_dropframe.cpp $(INCLUDES)
-
-$(SRCDIR)/matrixutils.o: 
-	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/matrixutils.o $(SRCDIR)/matrixutils.cpp $(INCLUDES)
-
-$(SRCDIR)/conf.o: 
-	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/conf.o $(SRCDIR)/conf.cpp $(INCLUDES)
-
-$(SRCDIR)/ocr.o: 
-	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/ocr.o $(SRCDIR)/ocr.cpp $(INCLUDES)
-
-$(SRCDIR)/frame_drop_detect.o: 
-	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/frame_drop_detect.o $(SRCDIR)/frame_drop_detect.cpp $(INCLUDES)
-
-$(SRCDIR)/psnr.o: 
-	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/psnr.o $(SRCDIR)/psnr.cpp $(INCLUDES)
-
-$(SRCDIR)/vpsnr.o: 
-	$(CXX) $(CXXFLAGS) -c -o $(SRCDIR)/vpsnr.o $(SRCDIR)/vpsnr.cpp $(INCLUDES)
+include $(SRCDIR)/Makefile
 
 .PHONY : clean
 # clean

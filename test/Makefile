@@ -4,12 +4,10 @@ ifndef TESTMAKEFILE
 include third_party/Makefile
 include libs/Makefile
 
-other-all:
-	@echo "other makefile begin"
-	@echo $(LIBS)
-	@echo $(PRJDIR)
-	@echo $(DEBUG)
-	@echo "other makefile end"
+# 解耦合用，顶层make all未使用，可单独使用 make test-all
+TESTSUB=test_matrixutils test_psnr test_httprequest
+
+test-all-sub: $(TESTSUB)
 
 test_matrixutils: $(PRJDIR)/test/test_matrixutils.o $(LIBOBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LIBS)

@@ -67,6 +67,12 @@ include $(SRCDIR)/Makefile
 dst-all:
 	make dst-all-sub
 
+# todo:
+# install:
+
+# todo:
+# tar:
+
 .PHONY : clean
 clean:
 	-rm -f $(SRCDIR)/*.o $(TESTDIR)/*.o $(DSTSUB) $(TESTSUB)

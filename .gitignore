@@ -51,3 +51,4 @@ psnr/*
 conf/ocr.yaml
 
 *.avi
+.vscode

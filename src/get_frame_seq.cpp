@@ -9,7 +9,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include "conf.h"
-#include "cmdline.h"
+#include "../third_party/cmdline.h"
 #include "cmdlineutils.h"
 
 cv::Rect getSubFrameRect(YAML::Node &conf, cv::Mat &frame, int oriWidth, int oriHeight) {

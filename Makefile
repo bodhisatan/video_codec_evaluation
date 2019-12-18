@@ -53,6 +53,10 @@ ifndef PRJDIR
     PRJDIR=.
 endif
 
+ifndef THIRDIR
+    THIRDIR=third_party
+endif
+
 # 强耦合，底层修改，这里也会生效
 DST=dst-all 
 TEST=test-all

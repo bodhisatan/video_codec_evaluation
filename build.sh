@@ -22,6 +22,7 @@ done
 for((i=0; i<${#READINGFILES[@]}; i++))
 do
 	cp -rf ${READINGFILES[i]} ${OUTPUTDIR}/
+done
 
 # Deploy shell python conf
 cp -rf *.sh ${OUTPUTDIR}/bin

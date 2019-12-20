@@ -36,6 +36,10 @@ make clean && make DEBUG=1
 ```shell
 make -j4
 ```
+发布到output目录并打包output.tar.gz：
+```shell
+make install
+```
 
 ## videoLabelProcess.sh
 在视频的指定区域给视频增加帧号信息。

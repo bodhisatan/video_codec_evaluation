@@ -74,9 +74,6 @@ dst-all:
 # todo:
 # install:
 
-# todo:
-# tar:
-
 .PHONY : clean
 clean:
 	-rm -f $(SRCDIR)/*.o $(TESTDIR)/*.o $(DSTSUB) $(TESTSUB)

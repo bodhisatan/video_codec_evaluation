@@ -42,6 +42,10 @@ test_httprequest
 test_matrixutils
 test_psnr
 
+# install dir
+output
+output.tar.gz
+
 appInfo.sh
 ocr.py
 data/*

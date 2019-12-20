@@ -57,6 +57,10 @@ ifndef THIRDIR
     THIRDIR=third_party
 endif
 
+ifndef OUTPUTDIR
+    OUTPUTDIR=output
+endif
+
 # 强耦合，底层修改，这里也会生效
 DST=dst-all 
 TEST=test-all
@@ -71,13 +75,14 @@ include $(SRCDIR)/Makefile
 dst-all:
 	make dst-all-sub
 
-# todo:
-# install:
+install:
+	make all
+	$(shell sh build.sh)
 
 .PHONY : clean
 clean:
-	-rm -f $(SRCDIR)/*.o $(TESTDIR)/*.o $(DSTSUB) $(TESTSUB)
+	-rm -rf $(SRCDIR)/*.o $(TESTDIR)/*.o $(DSTSUB) $(TESTSUB) $(OUTPUTDIR)
 
 .PHONY : clean_data
 clean_data:
-	-rm -f data/* psnr/data/*
+	-rm -rf data/* psnr/data/*

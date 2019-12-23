@@ -171,12 +171,13 @@ bool temproralVisualize(const std::string &psnrlog) {
 
 	std::string path    = "python";
 	std::string cmd_dir = std::string("sys.path.append(\"" + path + "\")");
-	
+    std::string cmd_dir1= std::string("sys.path.append(\"bin/" + path + "\")");	
 	std::string psnrlog_dir = psnrlog.substr(0, psnrlog.find_last_of('/'));
 
     PyRun_SimpleString("import sys");
     PyRun_SimpleString("import os");
     PyRun_SimpleString(cmd_dir.c_str());
+    PyRun_SimpleString(cmd_dir1.c_str());
 
     // 加载模块
     PyObject* moduleName = PyUnicode_FromString("psnr_graph-Py3");

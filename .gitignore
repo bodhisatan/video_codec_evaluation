@@ -56,3 +56,4 @@ conf/ocr.yaml
 
 *.avi
 .vscode
+python/__pycache__/*

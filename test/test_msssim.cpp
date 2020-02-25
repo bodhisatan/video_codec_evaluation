@@ -227,7 +227,7 @@ pixel *down_sample(pixel *input, int height, int width, int scale)
     {
         for (int j = 0; j < width && cur < height * width / 4; j += 2)
         {
-            output[cur++] = (input[i * width + j] + input[i * width + j] + input[i * width + j] + input[i * width + j]) / 4;
+            output[cur++] = (input[i * width + j] + input[(i + 1) * width + j] + input[i * width + j + 1] + input[(i + 1) * width + j + 1]) / 4;
         }
     }
     return output;
